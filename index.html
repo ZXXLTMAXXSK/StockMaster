@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="STOCKMASTER: Herramienta de Gestión de Almacén. Eficiencia y control total de tu inventario.">
+    <title>STOCKMASTER | Gestión de Almacén</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /*
+         * 1. REINICIO BÁSICO Y VARIABLES
+         */
+        :root {
+            --color-primary: #dc3545; /* Rojo vibrante */
+            --color-secondary: #a71d2a; /* Rojo oscuro */
+            --color-text-light: #f8f9fa; /* Blanco para el texto */
+            --color-bg-dark: #212529; /* Negro oscuro para el fondo */
+            --font-stack: 'Montserrat', sans-serif;
+            --transition-speed: 0.3s;
+            --animation-duration: 1s;
+            --animation-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Suave para el texto */
+            --liquid-easing-brusco: ease-in-out; /* Agresivo para el movimiento */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-stack);
+            color: var(--color-text-light);
+            background-color: var(--color-bg-dark);
+            overflow-x: hidden;
+        }
+
+        /*
+         * 2. SECCIÓN PRINCIPAL (HERO)
+         */
+        #hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /*
+         * 3. EFECTO DE FONDO LÍQUIDO con ANIMACIÓN RÁPIDA y NUEVOS COLORES
+         */
+        .liquid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            filter: blur(100px); 
+            opacity: 0.8;
+            animation: colorShift 15s linear infinite; 
+        }
+
+        .liquid-layer {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.7; 
+        }
+
+        /* Capa 1: Degradado de Rojos */
+        .l1 {
+            width: 70vw; height: 70vw;
+            background: linear-gradient(135deg, #dc3545, #a71d2a); /* Rojos */
+            top: -25vh; left: -25vw;
+            animation: moveLayer1 7s infinite alternate var(--liquid-easing-brusco); 
+        }
+
+        /* Capa 2: Degradado de Grises a Negro */
+        .l2 {
+            width: 55vw; height: 55vw;
+            background: linear-gradient(45deg, #495057, #343a40); /* Grises a Negro */
+            bottom: -15vh; right: -15vw;
+            animation: moveLayer2 9s infinite alternate var(--liquid-easing-brusco);
+        }
+
+        /* Capa 3: Degradado de Blancos a Grises claros */
+        .l3 {
+            width: 65vw; height: 65vw;
+            background: linear-gradient(90deg, #f8f9fa, #e9ecef); /* Blancos a Grises claros */
+            top: 55vh; left: 35vw;
+            animation: moveLayer3 11s infinite alternate var(--liquid-easing-brusco);
+        }
+
+        /* Keyframes de movimiento (se mantiene el desplazamiento amplificado) */
+        @keyframes moveLayer1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30vw, 25vh) scale(1.2); } 
+        }
+
+        @keyframes moveLayer2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-25vw, -20vh) scale(0.85); } 
+        }
+
+        @keyframes moveLayer3 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(20vw, -25vh) rotate(60deg); } 
+        }
+
+        /* Animación de rotación de tono (hue-rotate)
+           Ahora, en lugar de rotar por el espectro completo, la rotación de tono sobre
+           rojos, grises y blancos creará un efecto más sutil de cambio dentro de esa paleta,
+           evitando que aparezcan colores que no sean de la paleta deseada de forma intensa.
+           Si quieres que los colores rojos-negros-blancos-grises muten a otros colores
+           vivos, entonces el hue-rotate de 360deg es lo correcto. Si quieres que se queden
+           más en la paleta, podemos ajustar el rango de hue-rotate (ej. 30deg).
+           Por ahora, lo mantengo en 360deg para que el "movimiento de colores" sea notable,
+           pero filtrado por los colores base que has puesto.
+        */
+        @keyframes colorShift {
+            0% { filter: blur(100px) hue-rotate(0deg); }
+            100% { filter: blur(100px) hue-rotate(360deg); } 
+        }
+
+
+        /*
+         * 4. CONTENIDO PRINCIPAL (TEXTO Y BOTÓN)
+         */
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 90%;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: 0.5rem;
+            margin-bottom: 0.5rem;
+            /* Degradado para el texto, combinando blanco y gris */
+            background: -webkit-linear-gradient(45deg, #f8f9fa, #ced4da);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* Sombra más suave para el texto claro */
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 3rem;
+            opacity: 0.85;
+            color: #adb5bd; /* Un gris intermedio para la descripción */
+        }
+
+        /*
+         * 5. BOTÓN (CTA - Call To Action)
+         */
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--color-bg-dark); /* Texto oscuro para el botón */
+            background-color: white; /* Fondo blanco para el botón */
+            border: none;
+            border-radius: 50px;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            box-shadow: 0 10px 30px rgba(179, 179, 179, 0.6); /* Sombra roja */
+        }
+
+        .cta-button:hover, .cta-button:focus {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(218, 218, 218, 0.9); /* Sombra roja más intensa */
+            outline: none;
+            background-color: white; /* Rojo oscuro al pasar el ratón */
+            color: black; /* Texto blanco al pasar el ratón */
+        }
+
+        /*
+         * 6. ANIMACIONES DE ENTRADA DEL CONTENIDO
+         */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp var(--animation-duration) var(--animation-easing) forwards;
+            opacity: 0; 
+        }
+
+        .animate-delay-1 {
+            animation-delay: 0.3s;
+        }
+
+        .animate-delay-2 {
+            animation-delay: 0.6s;
+        }
+
+        /*
+         * 7. RESPONSIVIDAD (Media Queries)
+         */
+
+        /* Teléfonos (max-width: 768px) */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3rem;
+                letter-spacing: 0.3rem;
+            }
+
+            .tagline {
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+            }
+
+            .cta-button {
+                font-size: 1rem;
+                padding: 0.8rem 2rem;
+            }
+
+            .liquid-bg {
+                filter: blur(50px);
+                animation: colorShift 30s linear infinite; 
+            }
+            
+            /* Duración de las animaciones en móvil */
+            .l1 { animation-duration: 12s; }
+            .l2 { animation-duration: 15s; }
+            .l3 { animation-duration: 18s; }
+
+            @keyframes moveLayer1 {
+                0% { transform: translate(0, 0) scale(1); }
+                100% { transform: translate(15vw, 12vh) scale(1.1); }
+            }
+
+            @keyframes moveLayer2 {
+                0% { transform: translate(0, 0) scale(1); }
+                100% { transform: translate(-12vw, -9vh) scale(0.95); }
+            }
+
+            @keyframes moveLayer3 {
+                0% { transform: translate(0, 0) rotate(0deg); }
+                100% { transform: translate(10vw, -12vh) rotate(25deg); }
+            }
+        }
+
+        /* Tablets (min-width: 769px and max-width: 1200px) */
+        @media (min-width: 769px) and (max-width: 1200px) {
+            .title {
+                font-size: 4rem;
+            }
+            .tagline {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header"></header>
+    <section id="hero-section" aria-label="Pantalla de bienvenida y presentación de STOCKMASTER">
+        <div class="liquid-bg">
+            <div class="liquid-layer l1"></div>
+            <div class="liquid-layer l2"></div>
+            <div class="liquid-layer l3"></div>
+        </div>
+
+        <div class="content">
+            <h1 class="title animate-fade-in-up">STOCKMASTER</h1>
+            
+            <p class="tagline animate-fade-in-up animate-delay-1">Gestión de Almacén: Eficiencia y Control Total.</p>
+            
+            <div class="cta-container">
+                <a href="HTML/login.html" class="cta-button animate-fade-in-up animate-delay-2">Acceder al Sistema</a>
+            </div>
+        </div>
+    </section>
+    <script src="scrip.js" defer></script>
+</body>
+</html>

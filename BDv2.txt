@@ -1,0 +1,303 @@
+-- ========================================
+-- BASE DE DATOS SISTEMA_ALMACEN COMPLETA
+-- ========================================
+
+CREATE DATABASE IF NOT EXISTS sistema_almacen CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE sistema_almacen;
+
+-- ========================================
+-- 1. USUARIOS Y ROLES
+-- ========================================
+CREATE TABLE IF NOT EXISTS usuarios (
+    idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    rol ENUM('administrador', 'operario', 'gerente') NOT NULL,
+    activo BOOLEAN DEFAULT TRUE,
+    turno VARCHAR(50) COMMENT 'Solo para operarios',
+    departamento VARCHAR(100) COMMENT 'Solo para gerentes',
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    contraseña INT NOT NULL,
+    INDEX idx_email (email),
+    INDEX idx_rol (rol)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 2. CLIENTES
+-- ========================================
+CREATE TABLE IF NOT EXISTS clientes (
+    idCliente INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    direccion VARCHAR(255),
+    ciudad VARCHAR(100),
+    contraseña INT NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email (email)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 3. PROVEEDORES
+-- ========================================
+CREATE TABLE IF NOT EXISTS proveedores (
+    idProveedor INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    telefono VARCHAR(20),
+    direccion VARCHAR(255),
+    INDEX idx_nombre (nombre)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 4. PRODUCTOS Y MERCANCÍA
+-- ========================================
+CREATE TABLE IF NOT EXISTS productos (
+    idProducto INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    sku VARCHAR(50) UNIQUE NOT NULL,
+    precio DECIMAL(10,2) NOT NULL,
+    idProveedor INT,
+    FOREIGN KEY (idProveedor) REFERENCES proveedores(idProveedor) ON DELETE SET NULL,
+    INDEX idx_sku (sku),
+    INDEX idx_nombre (nombre)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS mercancia (
+    idMercancia INT PRIMARY KEY AUTO_INCREMENT,
+    idProducto INT NOT NULL,
+    cantidadUnidades INT NOT NULL DEFAULT 0,
+    peso DECIMAL(10,2),
+    ubicacion VARCHAR(100),
+    fechaIngreso DATE,
+    FOREIGN KEY (idProducto) REFERENCES productos(idProducto) ON DELETE CASCADE,
+    INDEX idx_producto (idProducto),
+    INDEX idx_ubicacion (ubicacion)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 5. ENTRADAS DE MERCANCÍA
+-- ========================================
+CREATE TABLE IF NOT EXISTS entrada_mercancia (
+    idEntrada INT PRIMARY KEY AUTO_INCREMENT,
+    fechaEntrada DATE NOT NULL,
+    numeroFactura VARCHAR(50),
+    idProveedor INT,
+    estado ENUM('pendiente', 'autorizado') DEFAULT 'pendiente',
+    idGerente INT,
+    FOREIGN KEY (idProveedor) REFERENCES proveedores(idProveedor) ON DELETE SET NULL,
+    FOREIGN KEY (idGerente) REFERENCES usuarios(idUsuario) ON DELETE SET NULL,
+    INDEX idx_fecha (fechaEntrada),
+    INDEX idx_estado (estado)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS entrada_mercancia_detalle (
+    idDetalle INT PRIMARY KEY AUTO_INCREMENT,
+    idEntrada INT NOT NULL,
+    idMercancia INT NOT NULL,
+    cantidad INT NOT NULL,
+    FOREIGN KEY (idEntrada) REFERENCES entrada_mercancia(idEntrada) ON DELETE CASCADE,
+    FOREIGN KEY (idMercancia) REFERENCES mercancia(idMercancia) ON DELETE CASCADE,
+    INDEX idx_entrada (idEntrada)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 6. SALIDAS DE MERCANCÍA
+-- ========================================
+CREATE TABLE IF NOT EXISTS salida_mercancia (
+    idSalida INT PRIMARY KEY AUTO_INCREMENT,
+    fechaSalida DATE NOT NULL,
+    numeroPedido VARCHAR(50),
+    idCliente INT,
+    estado ENUM('pendiente', 'autorizado') DEFAULT 'pendiente',
+    idGerente INT,
+    FOREIGN KEY (idCliente) REFERENCES clientes(idCliente) ON DELETE SET NULL,
+    FOREIGN KEY (idGerente) REFERENCES usuarios(idUsuario) ON DELETE SET NULL,
+    INDEX idx_fecha (fechaSalida),
+    INDEX idx_estado (estado)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS salida_mercancia_detalle (
+    idDetalle INT PRIMARY KEY AUTO_INCREMENT,
+    idSalida INT NOT NULL,
+    idMercancia INT NOT NULL,
+    cantidad INT NOT NULL,
+    FOREIGN KEY (idSalida) REFERENCES salida_mercancia(idSalida) ON DELETE CASCADE,
+    FOREIGN KEY (idMercancia) REFERENCES mercancia(idMercancia) ON DELETE CASCADE,
+    INDEX idx_salida (idSalida)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 7. PEDIDOS
+-- ========================================
+CREATE TABLE IF NOT EXISTS pedido (
+    idPedido INT PRIMARY KEY AUTO_INCREMENT,
+    idCliente INT NOT NULL,
+    fechaPedido DATE NOT NULL,
+    estado ENUM('pendiente', 'enviado', 'entregado', 'cancelado') DEFAULT 'pendiente',
+    totalMonto DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    FOREIGN KEY (idCliente) REFERENCES clientes(idCliente) ON DELETE CASCADE,
+    INDEX idx_cliente (idCliente),
+    INDEX idx_estado (estado),
+    INDEX idx_fecha (fechaPedido)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS item_pedido (
+    idItem INT PRIMARY KEY AUTO_INCREMENT,
+    idPedido INT NOT NULL,
+    idProducto INT NOT NULL,
+    cantidadSolicitada INT NOT NULL,
+    cantidadEntregada INT DEFAULT 0,
+    precio DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (idPedido) REFERENCES pedido(idPedido) ON DELETE CASCADE,
+    FOREIGN KEY (idProducto) REFERENCES productos(idProducto) ON DELETE CASCADE,
+    INDEX idx_pedido (idPedido)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 8. INVENTARIO
+-- ========================================
+CREATE TABLE IF NOT EXISTS inventario (
+    idInventario INT PRIMARY KEY AUTO_INCREMENT,
+    fechaActualizacion DATE NOT NULL,
+    cantidadTotal INT NOT NULL DEFAULT 0,
+    INDEX idx_fecha (fechaActualizacion)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS inventario_producto (
+    idInventario INT NOT NULL,
+    idProducto INT NOT NULL,
+    cantidadActiva INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (idInventario, idProducto),
+    FOREIGN KEY (idInventario) REFERENCES inventario(idInventario) ON DELETE CASCADE,
+    FOREIGN KEY (idProducto) REFERENCES productos(idProducto) ON DELETE CASCADE,
+    INDEX idx_producto (idProducto)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 9. REPORTES
+-- ========================================
+CREATE TABLE IF NOT EXISTS reportes (
+    idReporte INT PRIMARY KEY AUTO_INCREMENT,
+    tipo ENUM('entrada', 'salida', 'inventario') NOT NULL,
+    fechaGeneracion DATE NOT NULL,
+    contenido TEXT,
+    idUsuario INT,
+    FOREIGN KEY (idUsuario) REFERENCES usuarios(idUsuario) ON DELETE SET NULL,
+    INDEX idx_tipo (tipo),
+    INDEX idx_fecha (fechaGeneracion)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 10. DATOS DE PRUEBA COMPLETOS
+-- ========================================
+
+-- Usuarios
+INSERT INTO usuarios (nombre, email, telefono, rol, turno, departamento, contraseña) VALUES
+('Admin Principal', 'admin@almacen.com', '5551234567', 'administrador', NULL, NULL, 123456),
+('Juan Operario', 'operario@almacen.com', '5557654321', 'operario', 'Matutino', NULL, 654321),
+('María Gerente', 'gerente@almacen.com', '5559876543', 'gerente', NULL, 'Ventas', 987654);
+
+-- Clientes
+INSERT INTO clientes (nombre, email, telefono, direccion, ciudad, contraseña) VALUES
+('Carlos López', 'carlos@correo.com', '5551112222', 'Av. Reforma 101', 'Ciudad de México', 111111),
+('Ana Torres', 'ana@correo.com', '5553334444', 'Calle Central 22', 'Guadalajara', 222222),
+('Luis García', 'luis@correo.com', '5555556666', 'Blvd. Norte 55', 'Monterrey', 333333);
+
+-- Proveedores
+INSERT INTO proveedores (nombre, email, telefono, direccion) VALUES
+('Proveedor ABC', 'abc@proveedor.com', '5553334444', 'Av. Principal 456'),
+('Distribuidora XYZ', 'xyz@distribuidor.com', '5555556666', 'Boulevard Norte 789'),
+('TechWorld S.A.', 'ventas@techworld.com', '5554447777', 'Calle del Sol 123'),
+('ElectroMax', 'contacto@electromax.com', '5557778888', 'Av. Sur 654'),
+('CompuPartes MX', 'soporte@compupartes.mx', '5558889999', 'Zona Industrial 12'),
+('OfficeLine', 'ventas@officeline.com', '5551112222', 'Av. Reforma 321');
+
+-- Productos
+INSERT INTO productos (nombre, descripcion, sku, precio, idProveedor) VALUES
+('Laptop Dell', 'Laptop para oficina', 'DELL-LAP-001', 15000.00, 1),
+('Mouse Logitech', 'Mouse inalámbrico', 'LOGI-MOU-001', 350.00, 1),
+('Teclado Mecánico', 'Teclado RGB', 'MECA-TEC-001', 1200.00, 2),
+('Monitor Samsung 24"', 'Monitor LED Full HD', 'SAMS-MON-024', 3200.00, 3),
+('Impresora HP LaserJet', 'Impresora láser multifuncional', 'HP-LAS-002', 4500.00, 4),
+('Disco Duro SSD 1TB', 'Almacenamiento rápido 1TB', 'SSD-1TB-001', 1900.00, 3),
+('Memoria RAM 16GB', 'DDR4 3200MHz', 'RAM-DDR4-016', 1200.00, 3),
+('Silla Ergonómica', 'Silla de oficina ajustable', 'SILL-ERG-001', 2500.00, 5),
+('Router TP-Link', 'Router Wi-Fi de alta velocidad', 'TPL-ROU-001', 1500.00, 2);
+
+-- Inventario inicial
+INSERT INTO inventario (fechaActualizacion, cantidadTotal) VALUES
+(CURDATE(), 225);
+
+INSERT INTO inventario_producto (idInventario, idProducto, cantidadActiva) VALUES
+(1, 1, 10),
+(1, 2, 50),
+(1, 3, 25),
+(1, 4, 15),
+(1, 5, 20),
+(1, 6, 30),
+(1, 7, 40),
+(1, 8, 25),
+(1, 9, 10);
+
+-- ========================================
+-- MERCANCÍA
+-- ========================================
+INSERT INTO mercancia (idProducto, cantidadUnidades, peso, ubicacion, fechaIngreso) VALUES
+(1, 10, 2.5, 'A1', CURDATE()),
+(2, 50, 0.2, 'B3', CURDATE()),
+(3, 25, 1.0, 'C2', CURDATE()),
+(4, 15, 3.0, 'D1', CURDATE()),
+(5, 20, 7.0, 'E2', CURDATE()),
+(6, 30, 1.2, 'F3', CURDATE()),
+(7, 40, 0.5, 'G1', CURDATE()),
+(8, 25, 15.0, 'H2', CURDATE()),
+(9, 10, 0.8, 'I1', CURDATE());
+
+-- ========================================
+-- ENTRADAS DE MERCANCÍA
+-- ========================================
+INSERT INTO entrada_mercancia (fechaEntrada, numeroFactura, idProveedor, estado, idGerente) VALUES
+(CURDATE(), 'FCT-001', 1, 'pendiente', 3),
+(CURDATE(), 'FCT-002', 2, 'autorizado', 3),
+(CURDATE(), 'FCT-003', 3, 'pendiente', 3);
+
+-- Detalles de entrada
+INSERT INTO entrada_mercancia_detalle (idEntrada, idMercancia, cantidad) VALUES
+(1, 1, 5),
+(1, 2, 20),
+(1, 3, 10),
+(2, 4, 15),
+(2, 5, 10),
+(3, 6, 20),
+(3, 7, 15),
+(3, 8, 10),
+(3, 9, 5);
+
+-- ========================================
+-- SALIDAS DE MERCANCÍA
+-- ========================================
+INSERT INTO salida_mercancia (fechaSalida, numeroPedido, idCliente, estado, idGerente) VALUES
+(CURDATE(), 'PED-001', 1, 'pendiente', 3),
+(CURDATE(), 'PED-002', 2, 'autorizado', 3),
+(CURDATE(), 'PED-003', 3, 'pendiente', 3);
+
+-- Detalles de salida
+INSERT INTO salida_mercancia_detalle (idSalida, idMercancia, cantidad) VALUES
+(1, 2, 5),
+(1, 3, 5),
+(2, 4, 5),
+(2, 5, 5),
+(3, 6, 10),
+(3, 7, 10),
+(3, 8, 5);
+
+-- ========================================
+-- REPORTES
+-- ========================================
+INSERT INTO reportes (tipo, fechaGeneracion, contenido, idUsuario) VALUES
+('entrada', CURDATE(), 'Reporte de entradas de mercancía generadas', 3),
+('salida', CURDATE(), 'Reporte de salidas de mercancía generadas', 3),
+('inventario', CURDATE(), 'Reporte de inventario actualizado', 3);

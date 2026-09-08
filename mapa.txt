@@ -1,0 +1,186 @@
+INICIO (login.php)
+│
+├── [Administrador] panel_admin.html
+│   ├── usuarios.php
+│   │   ├── nuevo_usuario.php
+│   ├── proveedores.php
+│   │   └── nuevo_proveedor.php
+│   ├── productos.php
+│   │   └── nuevo_producto.php
+│   ├── inventario.php
+│   ├── reportes.php
+│   │   ├── reporte_entradas.php
+│   │   ├── reporte_salidas.php
+│   │   └── reporte_inventario.php
+│
+├── [Operario de almacén] panel_operario.html
+│   ├── entrada_mercancia.php
+│   ├── salida_mercancia.php
+│   ├── verificar_mercancia.php
+│   └── detalle_entrada.php / detalle_salida.php
+│
+├── [Gerente de almacén] panel_gerente.html
+│   ├── autorizar_entrada.php
+│   ├── autorizar_salida.php
+│   ├── supervisar_inventario.php
+│   └── reportes.php
+│
+└── [Cliente] panel_cliente.html
+    ├── perfil_cliente.php
+    ├── pedidos.php
+    │   ├── nuevo_pedido.php
+    │   └── detalle_pedido.php
+    └── logout.php
+
+
+
+
+
+ACTUALIZACIÓN DEL MAPA DE NAVEGACIÓN
+
+
+INICIO (login.php)
+│
+├── [Administrador] panel_admin.php (ACTUALIZADO: .html → .php)
+│   ├── usuarios.php (MODAL)
+│   │   └── nuevo_usuario.php (MODAL)
+│   ├── proveedores.php (MODAL)
+│   │   └── nuevo_proveedor.php (MODAL)
+│   ├── productos.php (MODAL)
+│   │   └── nuevo_producto.php (MODAL)
+│   ├── inventario.php (MODAL)
+│   ├── reportes.php (MODAL)
+│   │   ├── reporte_entradas.php (MODAL)
+│   │   ├── reporte_salidas.php (MODAL)
+│   │   └── reporte_inventario.php (MODAL)
+│   └── php/admin/ (NUEVA CARPETA)
+│       ├── usuarios.php
+│       ├── nuevo_usuario.php
+│       ├── proveedores.php
+│       ├── nuevo_proveedor.php
+│       ├── productos.php
+│       ├── nuevo_producto.php
+│       ├── inventario.php
+│       ├── reporte_entradas.php
+│       ├── reporte_salidas.php
+│       └── reporte_inventario.php
+│
+├── [Operario de almacén] panel_operario.php (ACTUALIZADO: .html → .php)
+│   ├── entrada_mercancia.php (MODAL)
+│   ├── salida_mercancia.php (MODAL)
+│   ├── verificar_mercancia.php (MODAL)
+│   └── php/operario/ (NUEVA CARPETA)
+│       ├── proveedores.php
+│       ├── productos.php
+│       ├── clientes.php
+│       ├── entradas.php
+│       ├── salidas.php
+│       ├── mercancia.php
+│       ├── registrar_entrada.php
+│       └── registrar_salida.php
+│
+├── [Gerente de almacén] panel_gerente.php (ACTUALIZADO: .html → .php)
+│   ├── autorizar_entrada.php (MODAL)
+│   ├── autorizar_salida.php (MODAL)
+│   ├── supervisar_inventario.php (MODAL)
+│   ├── reportes.php (MODAL)
+│   └── php/gerente/ (NUEVA CARPETA)
+│       ├── entradas_pendientes.php
+│       ├── salidas_pendientes.php
+│       ├── inventario.php
+│       ├── autorizar_entrada.php
+│       ├── autorizar_salida.php
+│       ├── rechazar_entrada.php
+│       ├── rechazar_salida.php
+│       ├── detalle_entrada.php
+│       ├── detalle_salida.php
+│       ├── reporte_entradas.php
+│       ├── reporte_salidas.php
+│       ├── reporte_inventario.php
+│       └── reporte_movimientos.php
+│
+├── [Cliente] panel_cliente.php (ACTUALIZADO: .html → .php)
+│   ├── perfil_cliente.php (MODAL)
+│   ├── pedidos.php (MODAL)
+│   ├── nuevo_pedido.php (MODAL)
+│   ├── productos_disponibles.php (MODAL)
+│   ├── detalle_pedido.php (MODAL)
+│   └── php/cliente/ (NUEVA CARPETA)
+│       ├── perfil.php
+│       ├── pedidos.php
+│       ├── productos_disponibles.php
+│       ├── nuevo_pedido.php
+│       ├── detalle_pedido.php
+│       └── cancelar_pedido.php
+│
+├── php/config/
+│   └── conexion.php
+│
+└── logout.php
+
+
+
+
+
+//EXPLICACION DE QUE SE IMPLEMENTO
+
+
+1. Estructura de Archivos:
+Todos los panels principales: Cambiados de .html a .php
+Nueva carpeta php/ con subcarpetas por rol:
+php/admin/ - Funcionalidades de administrador
+php/operario/ - Funcionalidades de operario
+php/gerente/ - Funcionalidades de gerente
+php/cliente/ - Funcionalidades de cliente
+php/config/ - Configuración de conexión
+
+2. Sistema Modal:
+Todas las funcionalidades ahora se manejan mediante modales en un solo archivo PHP
+No hay navegación entre páginas - todo se carga dinámicamente
+Mejor experiencia de usuario sin recargas de página
+
+3. Nuevas Funcionalidades por Rol:
+Administrador:
+Gestión completa de usuarios, proveedores, productos
+Visualización de inventario
+Reportes detallados
+
+Operario:
+Registrar entradas/salidas de mercancía
+Verificar mercancía en almacén
+Consultar movimientos
+
+Gerente:
+Autorizar/rechazar entradas y salidas
+Supervisar inventario con análisis
+Reportes gerenciales
+Dtalles completos de movimientos
+
+Cliente:
+Perfil del cliente
+Gestión de pedidos (crear, ver, cancelar)
+Catálogo de productos disponibles
+Carrito de compras interactivo
+Seguimiento de pedidos
+
+4. Tecnologías Implementadas:
+SweetAlert2 para notificaciones modernas
+AJAX/Fetch para carga dinámica
+Validaciones en tiempo real
+Transacciones en base de datos
+Interfaz responsiva y moderna
+
+5. Estructura de Base de Datos Utilizada:
+Todas las funcionalidades están diseñadas para trabajar con tu estructura existente de:
+usuarios, clientes, proveedores
+productos, mercancia, inventario
+entrada_mercancia, salida_mercancia
+pedido, item_pedido
+reportes
+
+6. Ventajas del Nuevo Sistema:
+Una sola página por rol (menos archivos que mantener)
+Carga más rápida (solo se carga el contenido necesario)
+Mejor experiencia de usuario (sin recargas)
+Código más organizado (separación por carpetas)
+Mantenimiento más fácil (cambios centralizados)
