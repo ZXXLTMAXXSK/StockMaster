@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Productos - Sistema</title>
+  <link rel="stylesheet" href="../HTML/css/productos.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">Productos</div>
+    <div class="actions">
+      <a class="btn" href="nuevo_producto.html">+ Nuevo Producto</a>
+      <a class="btn ghost" href="panel_admin.html">Volver</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="filter">
+      <input placeholder="Buscar producto por nombre o SKU" />
+      <select>
+        <option value="">Todos los proveedores</option>
+      </select>
+    </section>
+
+    <section class="list">
+      <table>
+        <thead>
+          <tr><th>SKU</th><th>Nombre</th><th>Proveedor</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PRD-001</td>
+            <td>Arroz 1kg</td>
+            <td>Proveedor A</td>
+            <td>$1.20</td>
+            <td>120</td>
+            <td>
+              <a class="link" href="detalle_producto.html?id=1">Ver</a>
+              <a class="link" href="editar_producto.html?id=1">Editar</a>
+            </td>
+          </tr>
+          <tr>
+            <td>PRD-002</td>
+            <td>Azúcar 1kg</td>
+            <td>Proveedor B</td>
+            <td>$0.90</td>
+            <td>80</td>
+            <td>
+              <a class="link" href="detalle_producto.html?id=2">Ver</a>
+              <a class="link" href="editar_producto.html?id=2">Editar</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

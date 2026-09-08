@@ -1,0 +1,322 @@
+:root {
+  --sidebar: #0f172a;
+  --accent: #0ea5e9;
+  --card-bg: #ffffff;
+  --muted: #94a3b8;
+  --radius: 10px;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topbar .brand{
+  color: black;
+}
+
+.topbar {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 20px;
+  /* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+  color: black;
+  z-index: 100;
+}
+
+.topbar .brand {
+  font-weight: 700;
+}
+
+.topnav a {
+  color: #dbeafe;
+  margin-left: 14px;
+  text-decoration: none;
+}
+
+.topnav .logout {
+  padding: 6px 10px;
+  color: black;
+}
+
+h1 {
+  margin-bottom: 30px;
+  color: var(--sidebar);
+}
+
+/* ------------------ CARDS ------------------ */
+.container-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 20px;
+  width: 100%;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  width: 100%;
+  justify-items: center;
+}
+
+.stat {
+  background: var(--card-bg);
+  width: 220px;  /* Ancho fijo para todas */
+  height: 120px; /* Alto fijo para todas */
+  border-radius: var(--radius);
+  box-shadow: 0 6px 14px rgba(2, 6, 23, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--sidebar);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, background 0.3s ease;
+  cursor: pointer;
+}
+
+.stat a {
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards:hover .stat {
+  opacity: 0.5; /* Opaca todas las cards cuando se hace hover en cualquier card */
+}
+
+.cards .stat:hover {
+  transform: translateY(-10px) scale(1.05); /* Elevación y ligero zoom */
+  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.15);
+  opacity: 1; /* La card activa se destaca */
+  background: var(--accent); /* Cambia color de fondo al pasar el cursor */
+  color: white; /* Cambia el texto a blanco */
+}
+
+/* Estilos adicionales para modales */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 1000px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.btn {
+  background: var(--accent);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background: var(--muted);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th, .table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #eef2ff;
+}
+
+.table thead th {
+  background: #f1f5f9;
+  color: var(--muted);
+}
+
+.price {
+  font-weight: bold;
+  color: #059669;
+}
+
+.sku {
+  font-family: monospace;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.stock-low {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.stock-medium {
+  color: #d97706;
+}
+
+.stock-high {
+  color: #059669;
+}
+
+.search-box {
+  margin-bottom: 15px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/*SECCION DE BIENVENIDA*/
+#sec1{
+    width: 100%;
+    height: 110vh;
+    background: #bc4e9c;  
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, hsla(339, 80%, 12%, 0.984), hsla(34, 95%, 49%, 0.705)), url(../img/f1.jpg);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)), url(../img/f1.jpg); 
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+    color: white;
+    text-align: center;
+    padding: 0 12%;
+    min-height: 100vh;
+    z-index: 99;
+}
+#sec1 h2{
+    font-size: 90px;
+    padding: 30px;
+}
+
+
+#sec1 h2 {
+    font-size: clamp(2rem, 6vw, 5.5rem); 
+    padding: clamp(1rem, 3vw, 2rem);
+}
+
+@media (max-width: 768px) {
+    #sec1 {
+        padding: 0 6%;
+        background-attachment: scroll; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    #sec1 h2 {
+        font-size: clamp(1.8rem, 8vw, 3rem); 
+    }
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: white;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d3d2d2;
+  }
+
+
+
+
+  

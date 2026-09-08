@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inventario - Sistema</title>
+  <link rel="stylesheet" href="../HTML/css/inventario.css">
+</head>
+<body>
+  <header class="head">
+    <h1>Inventario</h1>
+    <div class="controls">
+      <a class="btn" href="actualizar_stock.html">Actualizar stock</a>
+      <a class="btn ghost" href="panel_admin.html">Volver</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="summary">
+      <div class="item"><strong>Total items:</strong> 1,254</div>
+      <div class="item"><strong>Unidades totales:</strong> 34,820</div>
+      <div class="item"><strong>Alertas:</strong> 9</div>
+    </section>
+
+    <section class="table-wrap">
+      <table class="inv">
+        <thead><tr><th>Producto</th><th>SKU</th><th>Ubicación</th><th>Cantidad</th><th>Última entrada</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr><td>Arroz 1kg</td><td>PRD-001</td><td>Estantería A/2</td><td>120</td><td>2025-10-12</td><td><a href="detalle_inventario.html?id=1">Ver</a></td></tr>
+          <tr><td>Azúcar 1kg</td><td>PRD-002</td><td>Estantería B/1</td><td>80</td><td>2025-10-10</td><td><a href="detalle_inventario.html?id=2">Ver</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel Gerente - Sistema</title>
+  <link rel="stylesheet" href="../HTML/css/panel_admin.css">
+  <style>
+    /* Estilos para modales */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 1200px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-success {
+      background: #059669;
+    }
+
+    .btn-warning {
+      background: #d97706;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+    }
+
+    .btn-small {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .table th, .table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef2ff;
+    }
+
+    .table thead th {
+      background: #f1f5f9;
+      color: var(--muted);
+    }
+
+    .status-pendiente {
+      background-color: #fef3c7;
+      color: #d97706;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-autorizado {
+      background-color: #d1fae5;
+      color: #059669;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-rechazado {
+      background-color: #fee2e2;
+      color: #dc2626;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .container-cards {
+      padding: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(2,6,23,0.06);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat a {
+      text-decoration: none;
+      color: var(--sidebar);
+      font-weight: bold;
+      font-size: 1.1em;
+      display: block;
+      height: 100%;
+    }
+
+    .search-box {
+      margin-bottom: 15px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .stock-low {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    .stock-medium {
+      color: #d97706;
+    }
+
+    .stock-high {
+      color: #059669;
+    }
+
+    .report-summary {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .detail-row {
+      background: #f8fafc;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">STOCKMASTER</div>
+    <nav class="topnav">
+      <a class="logout" href="php/logout.php">Cerrar sesión</a>
+    </nav>
+  </header>
+
+
+   <!-- BIENVENIDA-->
+  <section id="sec1">
+  <div class="carrusel">
+    <div class="slide active"></div>
+    <div class="slide"></div>
+  </div>
+
+  <h2>
+    <script language="JavaScript1.2">
+      var message="BIENVENIDO AL PANEL DEL GERENTE"
+      var neonbasecolor="white"
+      var neontextcolor="#6a040f"
+      var neontextcolor2="#faa307"
+      var flashspeed=190
+      var flashingletters=1
+      var flashingletters2=3
+      var flashpause=0
+
+      var n=0
+      if (document.all||document.getElementById){
+        document.write('<font color="'+neonbasecolor+'">')
+        for (m=0;m<message.length;m++)
+          document.write('<span id="neonlight'+m+'">'+message.charAt(m)+'</span>')
+        document.write('</font>')
+      } else {
+        document.write(message)
+      }
+
+      function crossref(number){
+        var crossobj=document.all? eval("document.all.neonlight"+number) : document.getElementById("neonlight"+number)
+        return crossobj
+      }
+
+      function neon(){
+        if (n==0){
+          for (m=0;m<message.length;m++)
+            crossref(m).style.color=neonbasecolor
+        }   
+        crossref(n).style.color=neontextcolor
+        if (n>flashingletters-1) crossref(n-flashingletters).style.color=neontextcolor2 
+        if (n>(flashingletters+flashingletters2)-1) crossref(n-flashingletters-flashingletters2).style.color=neonbasecolor
+        if (n<message.length-1)
+          n++
+        else{
+          n=0
+          clearInterval(flashing)
+          setTimeout("beginneon()",flashpause)
+          return
+        }
+      }
+
+      function beginneon(){
+        if (document.all||document.getElementById)
+          flashing=setInterval("neon()",flashspeed)
+      }
+      beginneon()
+    </script>
+  </h2>
+
+  <h3>Supervisa y autoriza, tu mandas aqui.</h3>
+  <h5><span1>Desliza</span1> <span4>Hacia</span4> <span1>abajo..</span1></h5>
+</section>
+
+<div style="height:250px; overflow: hidden; z-index: 101; width: 100%; margin-top: -140px;">
+  <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+    <path d="M0.00,49.98 C149.99,150.00 349.20,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+      style="stroke: none; fill: rgb(255, 255, 255);"></path>
+  </svg>
+</div>
+
+<script>
+  // === CARRUSEL SUAVE SIN PARPADEOS ===
+  const imagenes = [
+    'img/f1.jpg',
+    'img/f2.jpg',
+    'img/f3.jpg',
+    'img/f4.jpg'
+  ]; // pon aquí tus rutas
+
+  let index = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  // inicial
+  slides[0].style.backgroundImage = `
+    linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+    url(${imagenes[0]})
+  `;
+  slides[1].style.backgroundImage = `
+    linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+    url(${imagenes[1]})
+  `;
+  slides[1].style.opacity = 0;
+
+  let activo = 0;
+
+  function cambiarFondo() {
+    const actual = slides[activo];
+    const siguiente = slides[1 - activo];
+
+    index = (index + 1) % imagenes.length;
+
+    // Prepara la siguiente imagen ANTES de la transición
+    siguiente.style.backgroundImage = `
+      linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+      url(${imagenes[index]})
+    `;
+
+    // Cruza opacidades simultáneamente
+    siguiente.style.transition = "opacity 1.5s ease-in-out";
+    actual.style.transition = "opacity 1.5s ease-in-out";
+
+    siguiente.style.opacity = 1;
+    actual.style.opacity = 0;
+
+    // alterna las capas
+    activo = 1 - activo;
+  }
+
+  setInterval(cambiarFondo, 4000); // cambia cada 4 segundos
+</script>
+
+<style>
+  /* === Tu CSS original respetado === */
+  #sec1 {
+    width: 100%;
+    height: 110vh;
+    position: relative;
+    color: white;
+    text-align: center;
+    padding: 0 12%;
+    min-height: 100vh;
+    z-index: 99;
+    overflow: hidden;
+  }
+
+  .carrusel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.slide:first-child {
+  opacity: 1;
+}
+
+</style>
+
+
+
+
+  <div class="container-cards">
+    <h1 style="text-align:center; margin-bottom:20px;">MENÚ DE GERENTE</h1>
+    <div class="cards">
+      <div class="stat"><a href="javascript:void(0)" id="btnAutorizarEntrada">Autorizar Entrada</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnAutorizarSalida">Autorizar Salida</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnSupervisarInventario">Supervisar Inventario</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnReportes">Reportes</a></div>
+    </div>
+  </div>
+
+  <!-- Modal para Autorizar Entrada -->
+  <div id="modalAutorizarEntrada" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Autorizar Entradas de Mercancía</h2>
+      <div class="search-box">
+        <input type="text" id="searchEntradasPendientes" placeholder="Buscar entrada pendiente...">
+      </div>
+      <div id="contenidoEntradasPendientes">
+        <!-- Aquí se cargará la lista de entradas pendientes -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Autorizar Salida -->
+  <div id="modalAutorizarSalida" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Autorizar Salidas de Mercancía</h2>
+      <div class="search-box">
+        <input type="text" id="searchSalidasPendientes" placeholder="Buscar salida pendiente...">
+      </div>
+      <div id="contenidoSalidasPendientes">
+        <!-- Aquí se cargará la lista de salidas pendientes -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Supervisar Inventario -->
+  <div id="modalSupervisarInventario" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Supervisar Inventario</h2>
+      <div class="search-box">
+        <input type="text" id="searchInventario" placeholder="Buscar producto...">
+      </div>
+      <div id="contenidoSupervisarInventario">
+        <!-- Aquí se cargará el inventario -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Reportes -->
+  <div id="modalReportes" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Reportes Gerenciales</h2>
+      <div id="contenidoReportes">
+        <div class="cards">
+          <div class="stat"><a href="javascript:void(0)" id="btnReporteEntradas">Reporte de Entradas</a></div>
+          <div class="stat"><a href="javascript:void(0)" id="btnReporteSalidas">Reporte de Salidas</a></div>
+          <div class="stat"><a href="javascript:void(0)" id="btnReporteInventario">Reporte de Inventario</a></div>
+          <div class="stat"><a href="javascript:void(0)" id="btnReporteMovimientos">Reporte de Movimientos</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Detalles de Entrada -->
+  <div id="modalDetalleEntrada" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Detalles de Entrada</h2>
+      <div id="contenidoDetalleEntrada">
+        <!-- Aquí se cargarán los detalles de la entrada -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Detalles de Salida -->
+  <div id="modalDetalleSalida" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Detalles de Salida</h2>
+      <div id="contenidoDetalleSalida">
+        <!-- Aquí se cargarán los detalles de la salida -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Prevenir el comportamiento por defecto de todos los enlaces en las cards
+      document.querySelectorAll('.cards a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+        });
+      });
+
+      // Modal de Autorizar Entrada
+      const modalAutorizarEntrada = document.getElementById('modalAutorizarEntrada');
+      const btnAutorizarEntrada = document.getElementById('btnAutorizarEntrada');
+      const spanAutorizarEntrada = modalAutorizarEntrada.getElementsByClassName('close')[0];
+
+      btnAutorizarEntrada.onclick = function(e) {
+        e.preventDefault();
+        modalAutorizarEntrada.style.display = 'block';
+        cargarEntradasPendientes();
+      }
+
+      spanAutorizarEntrada.onclick = function() {
+        modalAutorizarEntrada.style.display = 'none';
+      }
+
+      // Modal de Autorizar Salida
+      const modalAutorizarSalida = document.getElementById('modalAutorizarSalida');
+      const btnAutorizarSalida = document.getElementById('btnAutorizarSalida');
+      const spanAutorizarSalida = modalAutorizarSalida.getElementsByClassName('close')[0];
+
+      btnAutorizarSalida.onclick = function(e) {
+        e.preventDefault();
+        modalAutorizarSalida.style.display = 'block';
+        cargarSalidasPendientes();
+      }
+
+      spanAutorizarSalida.onclick = function() {
+        modalAutorizarSalida.style.display = 'none';
+      }
+
+      // Modal de Supervisar Inventario
+      const modalSupervisarInventario = document.getElementById('modalSupervisarInventario');
+      const btnSupervisarInventario = document.getElementById('btnSupervisarInventario');
+      const spanSupervisarInventario = modalSupervisarInventario.getElementsByClassName('close')[0];
+
+      btnSupervisarInventario.onclick = function(e) {
+        e.preventDefault();
+        modalSupervisarInventario.style.display = 'block';
+        cargarInventarioSupervisar();
+      }
+
+      spanSupervisarInventario.onclick = function() {
+        modalSupervisarInventario.style.display = 'none';
+      }
+
+      // Modal de Reportes
+      const modalReportes = document.getElementById('modalReportes');
+      const btnReportes = document.getElementById('btnReportes');
+      const spanReportes = modalReportes.getElementsByClassName('close')[0];
+
+      btnReportes.onclick = function(e) {
+        e.preventDefault();
+        modalReportes.style.display = 'block';
+      }
+
+      spanReportes.onclick = function() {
+        modalReportes.style.display = 'none';
+      }
+
+      // Modal de Detalle Entrada
+      const modalDetalleEntrada = document.getElementById('modalDetalleEntrada');
+      const spanDetalleEntrada = modalDetalleEntrada.getElementsByClassName('close')[0];
+      spanDetalleEntrada.onclick = function() {
+        modalDetalleEntrada.style.display = 'none';
+      }
+
+      // Modal de Detalle Salida
+      const modalDetalleSalida = document.getElementById('modalDetalleSalida');
+      const spanDetalleSalida = modalDetalleSalida.getElementsByClassName('close')[0];
+      spanDetalleSalida.onclick = function() {
+        modalDetalleSalida.style.display = 'none';
+      }
+
+      // Cerrar modales al hacer clic fuera
+      window.onclick = function(event) {
+        const modals = [
+          modalAutorizarEntrada, modalAutorizarSalida, 
+          modalSupervisarInventario, modalReportes,
+          modalDetalleEntrada, modalDetalleSalida
+        ];
+        
+        modals.forEach(modal => {
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        });
+      }
+
+      // Búsqueda en entradas pendientes
+      const searchEntradasPendientes = document.getElementById('searchEntradasPendientes');
+      searchEntradasPendientes.addEventListener('input', function() {
+        filtrarTabla('contenidoEntradasPendientes', this.value);
+      });
+
+      // Búsqueda en salidas pendientes
+      const searchSalidasPendientes = document.getElementById('searchSalidasPendientes');
+      searchSalidasPendientes.addEventListener('input', function() {
+        filtrarTabla('contenidoSalidasPendientes', this.value);
+      });
+
+      // Búsqueda en inventario
+      const searchInventario = document.getElementById('searchInventario');
+      searchInventario.addEventListener('input', function() {
+        filtrarTabla('contenidoSupervisarInventario', this.value);
+      });
+
+      // Botones de reportes dentro del modal de reportes
+      document.getElementById('btnReporteEntradas').onclick = function(e) {
+        e.preventDefault();
+        cargarReporteEntradas();
+      }
+
+      document.getElementById('btnReporteSalidas').onclick = function(e) {
+        e.preventDefault();
+        cargarReporteSalidas();
+      }
+
+      document.getElementById('btnReporteInventario').onclick = function(e) {
+        e.preventDefault();
+        cargarReporteInventario();
+      }
+
+      document.getElementById('btnReporteMovimientos').onclick = function(e) {
+        e.preventDefault();
+        cargarReporteMovimientos();
+      }
+    });
+
+    // Función para cargar entradas pendientes
+    function cargarEntradasPendientes() {
+      fetch('php/gerente/entradas_pendientes.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoEntradasPendientes');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Fecha</th><th>N° Factura</th><th>Proveedor</th><th>Productos</th><th>Total Items</th><th>Acciones</th></tr></thead><tbody>';
+            data.forEach(entrada => {
+              html += `<tr>
+                <td>${entrada.fechaEntrada}</td>
+                <td>${entrada.numeroFactura}</td>
+                <td>${entrada.nombre_proveedor || 'N/A'}</td>
+                <td>${entrada.total_productos || 0} productos</td>
+                <td>${entrada.total_cantidad || 0} unidades</td>
+                <td class="action-buttons">
+                  <button class="btn btn-success btn-small" onclick="autorizarEntrada(${entrada.idEntrada})">Autorizar</button>
+                  <button class="btn btn-warning btn-small" onclick="verDetalleEntrada(${entrada.idEntrada})">Detalles</button>
+                  <button class="btn btn-danger btn-small" onclick="rechazarEntrada(${entrada.idEntrada})">Rechazar</button>
+                </td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay entradas pendientes de autorización.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar entradas pendientes:', error);
+          contenido.innerHTML = '<p>Error al cargar las entradas pendientes.</p>';
+        });
+    }
+
+    // Función para cargar salidas pendientes
+    function cargarSalidasPendientes() {
+      fetch('php/gerente/salidas_pendientes.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoSalidasPendientes');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Fecha</th><th>N° Pedido</th><th>Cliente</th><th>Productos</th><th>Total Items</th><th>Acciones</th></tr></thead><tbody>';
+            data.forEach(salida => {
+              html += `<tr>
+                <td>${salida.fechaSalida}</td>
+                <td>${salida.numeroPedido}</td>
+                <td>${salida.nombre_cliente || 'N/A'}</td>
+                <td>${salida.total_productos || 0} productos</td>
+                <td>${salida.total_cantidad || 0} unidades</td>
+                <td class="action-buttons">
+                  <button class="btn btn-success btn-small" onclick="autorizarSalida(${salida.idSalida})">Autorizar</button>
+                  <button class="btn btn-warning btn-small" onclick="verDetalleSalida(${salida.idSalida})">Detalles</button>
+                  <button class="btn btn-danger btn-small" onclick="rechazarSalida(${salida.idSalida})">Rechazar</button>
+                </td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay salidas pendientes de autorización.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar salidas pendientes:', error);
+          contenido.innerHTML = '<p>Error al cargar las salidas pendientes.</p>';
+        });
+    }
+
+    // Función para cargar inventario para supervisión
+    function cargarInventarioSupervisar() {
+      fetch('php/gerente/inventario.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoSupervisarInventario');
+          if (data.length > 0) {
+            let html = '<div class="report-summary">';
+            const totalProductos = data.length;
+            const stockBajo = data.filter(p => p.cantidadActiva < 10).length;
+            const stockMedio = data.filter(p => p.cantidadActiva >= 10 && p.cantidadActiva < 20).length;
+            const stockAlto = data.filter(p => p.cantidadActiva >= 20).length;
+            const valorTotal = data.reduce((sum, p) => sum + (p.cantidadActiva * p.precio), 0);
+            
+            html += `<p><strong>Total de productos:</strong> ${totalProductos}</p>`;
+            html += `<p><strong>Stock bajo (<10):</strong> <span class="stock-low">${stockBajo} productos</span></p>`;
+            html += `<p><strong>Stock medio (10-19):</strong> <span class="stock-medium">${stockMedio} productos</span></p>`;
+            html += `<p><strong>Stock alto (20+):</strong> <span class="stock-high">${stockAlto} productos</span></p>`;
+            html += `<p><strong>Valor total del inventario:</strong> $${valorTotal.toFixed(2)}</p>`;
+            html += '</div>';
+            
+            html += '<table class="table"><thead><tr><th>Producto</th><th>SKU</th><th>Stock</th><th>Precio Unitario</th><th>Valor Total</th><th>Proveedor</th><th>Estado</th></tr></thead><tbody>';
+            data.forEach(producto => {
+              let stockClass = 'stock-high';
+              if (producto.cantidadActiva < 10) {
+                stockClass = 'stock-low';
+              } else if (producto.cantidadActiva < 20) {
+                stockClass = 'stock-medium';
+              }
+              
+              const valorTotal = producto.cantidadActiva * producto.precio;
+
+              html += `<tr>
+                <td>${producto.nombre}</td>
+                <td>${producto.sku}</td>
+                <td class="${stockClass}">${producto.cantidadActiva} unidades</td>
+                <td>$${parseFloat(producto.precio).toFixed(2)}</td>
+                <td>$${parseFloat(valorTotal).toFixed(2)}</td>
+                <td>${producto.nombre_proveedor || 'N/A'}</td>
+                <td><span class="${stockClass}">${producto.cantidadActiva < 10 ? 'BAJO' : producto.cantidadActiva < 20 ? 'MEDIO' : 'ALTO'}</span></td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay datos de inventario.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar inventario:', error);
+          contenido.innerHTML = '<p>Error al cargar el inventario.</p>';
+        });
+    }
+
+    // Función para autorizar entrada
+    function autorizarEntrada(idEntrada) {
+      if (confirm('¿Está seguro de autorizar esta entrada?')) {
+        fetch('php/gerente/autorizar_entrada.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ idEntrada: idEntrada })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Entrada autorizada correctamente');
+            cargarEntradasPendientes();
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    }
+
+    // Función para autorizar salida
+    function autorizarSalida(idSalida) {
+      if (confirm('¿Está seguro de autorizar esta salida?')) {
+        fetch('php/gerente/autorizar_salida.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ idSalida: idSalida })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Salida autorizada correctamente');
+            cargarSalidasPendientes();
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    }
+
+    // Función para rechazar entrada
+    function rechazarEntrada(idEntrada) {
+      const motivo = prompt('Ingrese el motivo del rechazo:');
+      if (motivo !== null) {
+        fetch('php/gerente/rechazar_entrada.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            idEntrada: idEntrada,
+            motivo: motivo
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Entrada rechazada correctamente');
+            cargarEntradasPendientes();
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    }
+
+    // Función para rechazar salida
+    function rechazarSalida(idSalida) {
+      const motivo = prompt('Ingrese el motivo del rechazo:');
+      if (motivo !== null) {
+        fetch('php/gerente/rechazar_salida.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            idSalida: idSalida,
+            motivo: motivo
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Salida rechazada correctamente');
+            cargarSalidasPendientes();
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    }
+
+    // Función para ver detalle de entrada
+    function verDetalleEntrada(idEntrada) {
+      fetch(`php/gerente/detalle_entrada.php?id=${idEntrada}`)
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoDetalleEntrada');
+          let html = `<h3>Entrada #${data.entrada.idEntrada}</h3>`;
+          html += `<p><strong>Fecha:</strong> ${data.entrada.fechaEntrada}</p>`;
+          html += `<p><strong>N° Factura:</strong> ${data.entrada.numeroFactura}</p>`;
+          html += `<p><strong>Proveedor:</strong> ${data.entrada.nombre_proveedor}</p>`;
+          html += `<p><strong>Estado:</strong> <span class="status-pendiente">${data.entrada.estado}</span></p>`;
+          
+          html += '<h4>Productos:</h4>';
+          data.detalles.forEach(detalle => {
+            html += `<div class="detail-row">
+              <p><strong>Producto:</strong> ${detalle.nombre_producto}</p>
+              <p><strong>Cantidad:</strong> ${detalle.cantidad} unidades</p>
+              <p><strong>Peso:</strong> ${detalle.peso || 'N/A'} kg</p>
+              <p><strong>Ubicación:</strong> ${detalle.ubicacion || 'N/A'}</p>
+            </div>`;
+          });
+          
+          contenido.innerHTML = html;
+          document.getElementById('modalDetalleEntrada').style.display = 'block';
+        })
+        .catch(error => {
+          console.error('Error al cargar detalle de entrada:', error);
+          alert('Error al cargar los detalles de la entrada');
+        });
+    }
+
+    // Función para ver detalle de salida
+    function verDetalleSalida(idSalida) {
+      fetch(`php/gerente/detalle_salida.php?id=${idSalida}`)
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoDetalleSalida');
+          let html = `<h3>Salida #${data.salida.idSalida}</h3>`;
+          html += `<p><strong>Fecha:</strong> ${data.salida.fechaSalida}</p>`;
+          html += `<p><strong>N° Pedido:</strong> ${data.salida.numeroPedido}</p>`;
+          html += `<p><strong>Cliente:</strong> ${data.salida.nombre_cliente}</p>`;
+          html += `<p><strong>Estado:</strong> <span class="status-pendiente">${data.salida.estado}</span></p>`;
+          
+          html += '<h4>Productos:</h4>';
+          data.detalles.forEach(detalle => {
+            html += `<div class="detail-row">
+              <p><strong>Producto:</strong> ${detalle.nombre_producto}</p>
+              <p><strong>Cantidad:</strong> ${detalle.cantidad} unidades</p>
+            </div>`;
+          });
+          
+          contenido.innerHTML = html;
+          document.getElementById('modalDetalleSalida').style.display = 'block';
+        })
+        .catch(error => {
+          console.error('Error al cargar detalle de salida:', error);
+          alert('Error al cargar los detalles de la salida');
+        });
+    }
+
+    // Funciones para reportes
+    function cargarReporteEntradas() {
+      window.open('php/gerente/reporte_entradas.php', '_blank');
+    }
+
+    function cargarReporteSalidas() {
+      window.open('php/gerente/reporte_salidas.php', '_blank');
+    }
+
+    function cargarReporteInventario() {
+      window.open('php/gerente/reporte_inventario.php', '_blank');
+    }
+
+    function cargarReporteMovimientos() {
+      window.open('php/gerente/reporte_movimientos.php', '_blank');
+    }
+
+    // Función para filtrar tablas
+    function filtrarTabla(contenidoId, searchTerm) {
+      const table = document.querySelector(`#${contenidoId} table`);
+      if (!table) return;
+
+      const rows = table.getElementsByTagName('tr');
+      for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let found = false;
+        
+        for (let j = 0; j < cells.length; j++) {
+          const cellText = cells[j].textContent || cells[j].innerText;
+          if (cellText.toLowerCase().includes(searchTerm.toLowerCase())) {
+            found = true;
+            break;
+          }
+        }
+        
+        rows[i].style.display = found ? '' : 'none';
+      }
+    }
+  </script>
+</body>
+</html>

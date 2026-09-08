@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel Admin - Sistema</title>
+  <link rel="stylesheet" href="../HTML/css/panel_admin.css">
+  <style>
+    /* Estilos para modales */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 1200px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: var(--muted);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .table th, .table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef2ff;
+    }
+
+    .table thead th {
+      background: #f1f5f9;
+      color: var(--muted);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-small {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .btn-edit {
+      background: #f59e0b;
+    }
+
+    .btn-delete {
+      background: #ef4444;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #059669;
+    }
+
+    .sku {
+      font-family: monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .stock-low {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    .stock-medium {
+      color: #d97706;
+    }
+
+    .stock-high {
+      color: #059669;
+    }
+
+    .search-box {
+      margin-bottom: 15px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .status-pendiente {
+      background-color: #fef3c7;
+      color: #d97706;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-autorizado {
+      background-color: #d1fae5;
+      color: #059669;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .report-summary {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+
+  <header class="topbar">
+    <div class="brand">STOCKMASTER</div>
+    <nav class="topnav">
+      <a class="logout" href="php/logout.php">Cerrar sesión</a>
+    </nav>
+  </header>
+
+
+  <!-- BIENVENIDA-->
+  <section id="sec1">
+  <div class="carrusel">
+    <div class="slide active"></div>
+    <div class="slide"></div>
+  </div>
+
+  <h2>
+    <script language="JavaScript1.2">
+      var message="PANEL DEL ADMINISTRADOR"
+      var neonbasecolor="white"
+      var neontextcolor="#6a040f"
+      var neontextcolor2="#faa307"
+      var flashspeed=190
+      var flashingletters=1
+      var flashingletters2=3
+      var flashpause=0
+
+      var n=0
+      if (document.all||document.getElementById){
+        document.write('<font color="'+neonbasecolor+'">')
+        for (m=0;m<message.length;m++)
+          document.write('<span id="neonlight'+m+'">'+message.charAt(m)+'</span>')
+        document.write('</font>')
+      } else {
+        document.write(message)
+      }
+
+      function crossref(number){
+        var crossobj=document.all? eval("document.all.neonlight"+number) : document.getElementById("neonlight"+number)
+        return crossobj
+      }
+
+      function neon(){
+        if (n==0){
+          for (m=0;m<message.length;m++)
+            crossref(m).style.color=neonbasecolor
+        }   
+        crossref(n).style.color=neontextcolor
+        if (n>flashingletters-1) crossref(n-flashingletters).style.color=neontextcolor2 
+        if (n>(flashingletters+flashingletters2)-1) crossref(n-flashingletters-flashingletters2).style.color=neonbasecolor
+        if (n<message.length-1)
+          n++
+        else{
+          n=0
+          clearInterval(flashing)
+          setTimeout("beginneon()",flashpause)
+          return
+        }
+      }
+
+      function beginneon(){
+        if (document.all||document.getElementById)
+          flashing=setInterval("neon()",flashspeed)
+      }
+      beginneon()
+    </script>
+  </h2>
+
+  <h3>Organiza y Administra, todo está en tus manos</h3>
+  <h5><span1>Desliza</span1> <span4>Hacia</span4> <span1>abajo..</span1></h5>
+</section>
+
+<div style="height:250px; overflow: hidden; z-index: 101; width: 100%; margin-top: -140px;">
+  <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+    <path d="M0.00,49.98 C149.99,150.00 349.20,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+      style="stroke: none; fill: rgb(255, 255, 255);"></path>
+  </svg>
+</div>
+
+<script>
+  // === CARRUSEL SUAVE SIN PARPADEOS ===
+  const imagenes = [
+    'img/f1.jpg',
+    'img/f2.jpg',
+    'img/f3.jpg',
+    'img/f4.jpg'
+  ]; // pon aquí tus rutas
+
+  let index = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  // inicial
+  slides[0].style.backgroundImage = `
+    linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+    url(${imagenes[0]})
+  `;
+  slides[1].style.backgroundImage = `
+    linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+    url(${imagenes[1]})
+  `;
+  slides[1].style.opacity = 0;
+
+  let activo = 0;
+
+  function cambiarFondo() {
+    const actual = slides[activo];
+    const siguiente = slides[1 - activo];
+
+    index = (index + 1) % imagenes.length;
+
+    // Prepara la siguiente imagen ANTES de la transición
+    siguiente.style.backgroundImage = `
+      linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+      url(${imagenes[index]})
+    `;
+
+    // Cruza opacidades simultáneamente
+    siguiente.style.transition = "opacity 1.5s ease-in-out";
+    actual.style.transition = "opacity 1.5s ease-in-out";
+
+    siguiente.style.opacity = 1;
+    actual.style.opacity = 0;
+
+    // alterna las capas
+    activo = 1 - activo;
+  }
+
+  setInterval(cambiarFondo, 4000); // cambia cada 4 segundos
+</script>
+
+<style>
+  /* === Tu CSS original respetado === */
+  #sec1 {
+    width: 100%;
+    height: 110vh;
+    position: relative;
+    color: white;
+    text-align: center;
+    padding: 0 12%;
+    min-height: 100vh;
+    z-index: 99;
+    overflow: hidden;
+  }
+
+  .carrusel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.slide:first-child {
+  opacity: 1;
+}
+
+</style>
+
+
+
+
+  <!-- LOGICA-->
+  <div class="container-cards">
+  <h1 style="text-align:center; margin-bottom:20px;">MENÚ DE OPCIONES</h1>
+  <div class="cards">
+    <div class="stat"><a href="javascript:void(0)" id="btnVerUsuarios">Ver Usuarios</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnNuevoUsuario">Nuevo Usuario</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnVerProveedores">Ver Proveedores</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnNuevoProveedor">Nuevo Proveedor</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnVerProductos">Ver Productos</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnNuevoProducto">Nuevo Producto</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnVerInventario">Ver Inventario</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnReporteEntradas">Reporte Entradas</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnReporteSalidas">Reporte Salidas</a></div>
+    <div class="stat"><a href="javascript:void(0)" id="btnReporteInventario">Reporte Inventario</a></div>
+  </div>
+</div>
+
+
+  <!-- Modal para Ver Usuarios -->
+  <div id="modalUsuarios" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Lista de Usuarios</h2>
+      <div id="contenidoUsuarios">
+        <!-- Aquí se cargará la lista de usuarios -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Nuevo Usuario -->
+  <div id="modalNuevoUsuario" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Agregar Nuevo Usuario</h2>
+      <form id="formNuevoUsuario">
+        <div class="form-group">
+          <label for="nombre">Nombre completo:</label>
+          <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="text" id="telefono" name="telefono">
+        </div>
+        <div class="form-group">
+          <label for="rol">Rol:</label>
+          <select id="rol" name="rol" required>
+            <option value="">Selecciona un rol</option>
+            <option value="administrador">Administrador</option>
+            <option value="operario">Operario</option>
+            <option value="gerente">Gerente</option>
+          </select>
+        </div>
+        <div class="form-group" id="grupoTurno" style="display:none;">
+          <label for="turno">Turno:</label>
+          <input type="text" id="turno" name="turno" placeholder="Ej: Matutino, Vespertino">
+        </div>
+        <div class="form-group" id="grupoDepartamento" style="display:none;">
+          <label for="departamento">Departamento:</label>
+          <input type="text" id="departamento" name="departamento" placeholder="Ej: Ventas, Logística">
+        </div>
+        <div class="form-group">
+          <label for="contraseña">Contraseña:</label>
+          <input type="password" id="contraseña" name="contraseña" required>
+        </div>
+        <button type="submit" class="btn">Guardar Usuario</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Proveedores -->
+  <div id="modalProveedores" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Lista de Proveedores</h2>
+      <div id="contenidoProveedores">
+        <!-- Aquí se cargará la lista de proveedores -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Nuevo Proveedor -->
+  <div id="modalNuevoProveedor" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Agregar Nuevo Proveedor</h2>
+      <form id="formNuevoProveedor">
+        <div class="form-group">
+          <label for="nombre_proveedor">Nombre del proveedor:</label>
+          <input type="text" id="nombre_proveedor" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="email_proveedor">Email:</label>
+          <input type="email" id="email_proveedor" name="email">
+        </div>
+        <div class="form-group">
+          <label for="telefono_proveedor">Teléfono:</label>
+          <input type="text" id="telefono_proveedor" name="telefono">
+        </div>
+        <div class="form-group">
+          <label for="direccion_proveedor">Dirección:</label>
+          <textarea id="direccion_proveedor" name="direccion"></textarea>
+        </div>
+        <button type="submit" class="btn">Guardar Proveedor</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Productos -->
+  <div id="modalProductos" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Lista de Productos</h2>
+      <div id="contenidoProductos">
+        <!-- Aquí se cargará la lista de productos -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Nuevo Producto -->
+  <div id="modalNuevoProducto" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Agregar Nuevo Producto</h2>
+      <form id="formNuevoProducto">
+        <div class="form-group">
+          <label for="nombre_producto">Nombre del producto:</label>
+          <input type="text" id="nombre_producto" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="descripcion_producto">Descripción:</label>
+          <textarea id="descripcion_producto" name="descripcion"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="sku_producto">SKU:</label>
+          <input type="text" id="sku_producto" name="sku" required>
+        </div>
+        <div class="form-group">
+          <label for="precio_producto">Precio:</label>
+          <input type="number" id="precio_producto" name="precio" step="0.01" min="0" required>
+        </div>
+        <div class="form-group">
+          <label for="proveedor_producto">Proveedor:</label>
+          <select id="proveedor_producto" name="idProveedor">
+            <option value="">Selecciona un proveedor</option>
+            <!-- Los proveedores se cargarán dinámicamente -->
+          </select>
+        </div>
+        <button type="submit" class="btn">Guardar Producto</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Inventario -->
+  <div id="modalInventario" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Inventario Actual</h2>
+      <div class="search-box">
+        <input type="text" id="searchInventario" placeholder="Buscar producto...">
+      </div>
+      <div id="contenidoInventario">
+        <!-- Aquí se cargará la lista del inventario -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Reporte de Entradas -->
+  <div id="modalReporteEntradas" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Reporte de Entradas de Mercancía</h2>
+      <div id="contenidoReporteEntradas">
+        <!-- Aquí se cargará el reporte de entradas -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Reporte de Salidas -->
+  <div id="modalReporteSalidas" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Reporte de Salidas de Mercancía</h2>
+      <div id="contenidoReporteSalidas">
+        <!-- Aquí se cargará el reporte de salidas -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Reporte de Inventario -->
+  <div id="modalReporteInventario" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Reporte de Inventario</h2>
+      <div id="contenidoReporteInventario">
+        <!-- Aquí se cargará el reporte de inventario -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Script para abrir/cerrar modales
+    document.addEventListener("DOMContentLoaded", () => {
+      // Prevenir el comportamiento por defecto de todos los enlaces en las cards
+      document.querySelectorAll('.cards a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+        });
+      });
+
+      // Modal de Ver Usuarios
+      const modalUsuarios = document.getElementById('modalUsuarios');
+      const btnVerUsuarios = document.getElementById('btnVerUsuarios');
+      const spanUsuarios = modalUsuarios.getElementsByClassName('close')[0];
+
+      btnVerUsuarios.onclick = function(e) {
+        e.preventDefault();
+        modalUsuarios.style.display = 'block';
+        cargarUsuarios();
+      }
+
+      spanUsuarios.onclick = function() {
+        modalUsuarios.style.display = 'none';
+      }
+
+      // Modal de Nuevo Usuario
+      const modalNuevoUsuario = document.getElementById('modalNuevoUsuario');
+      const btnNuevoUsuario = document.getElementById('btnNuevoUsuario');
+      const spanNuevoUsuario = modalNuevoUsuario.getElementsByClassName('close')[0];
+
+      btnNuevoUsuario.onclick = function(e) {
+        e.preventDefault();
+        modalNuevoUsuario.style.display = 'block';
+      }
+
+      spanNuevoUsuario.onclick = function() {
+        modalNuevoUsuario.style.display = 'none';
+      }
+
+      // Modal de Ver Proveedores
+      const modalProveedores = document.getElementById('modalProveedores');
+      const btnVerProveedores = document.getElementById('btnVerProveedores');
+      const spanProveedores = modalProveedores.getElementsByClassName('close')[0];
+
+      btnVerProveedores.onclick = function(e) {
+        e.preventDefault();
+        modalProveedores.style.display = 'block';
+        cargarProveedores();
+      }
+
+      spanProveedores.onclick = function() {
+        modalProveedores.style.display = 'none';
+      }
+
+      // Modal de Nuevo Proveedor
+      const modalNuevoProveedor = document.getElementById('modalNuevoProveedor');
+      const btnNuevoProveedor = document.getElementById('btnNuevoProveedor');
+      const spanNuevoProveedor = modalNuevoProveedor.getElementsByClassName('close')[0];
+
+      btnNuevoProveedor.onclick = function(e) {
+        e.preventDefault();
+        modalNuevoProveedor.style.display = 'block';
+      }
+
+      spanNuevoProveedor.onclick = function() {
+        modalNuevoProveedor.style.display = 'none';
+      }
+
+      // Modal de Ver Productos
+      const modalProductos = document.getElementById('modalProductos');
+      const btnVerProductos = document.getElementById('btnVerProductos');
+      const spanProductos = modalProductos.getElementsByClassName('close')[0];
+
+      btnVerProductos.onclick = function(e) {
+        e.preventDefault();
+        modalProductos.style.display = 'block';
+        cargarProductos();
+      }
+
+      spanProductos.onclick = function() {
+        modalProductos.style.display = 'none';
+      }
+
+      // Modal de Nuevo Producto
+      const modalNuevoProducto = document.getElementById('modalNuevoProducto');
+      const btnNuevoProducto = document.getElementById('btnNuevoProducto');
+      const spanNuevoProducto = modalNuevoProducto.getElementsByClassName('close')[0];
+
+      btnNuevoProducto.onclick = function(e) {
+        e.preventDefault();
+        modalNuevoProducto.style.display = 'block';
+        cargarProveedoresParaSelect();
+      }
+
+      spanNuevoProducto.onclick = function() {
+        modalNuevoProducto.style.display = 'none';
+      }
+
+      // Modal de Ver Inventario
+      const modalInventario = document.getElementById('modalInventario');
+      const btnVerInventario = document.getElementById('btnVerInventario');
+      const spanInventario = modalInventario.getElementsByClassName('close')[0];
+
+      btnVerInventario.onclick = function(e) {
+        e.preventDefault();
+        modalInventario.style.display = 'block';
+        cargarInventario();
+      }
+
+      spanInventario.onclick = function() {
+        modalInventario.style.display = 'none';
+      }
+
+      // Modal de Reporte Entradas
+      const modalReporteEntradas = document.getElementById('modalReporteEntradas');
+      const btnReporteEntradas = document.getElementById('btnReporteEntradas');
+      const spanReporteEntradas = modalReporteEntradas.getElementsByClassName('close')[0];
+
+      btnReporteEntradas.onclick = function(e) {
+        e.preventDefault();
+        modalReporteEntradas.style.display = 'block';
+        cargarReporteEntradas();
+      }
+
+      spanReporteEntradas.onclick = function() {
+        modalReporteEntradas.style.display = 'none';
+      }
+
+      // Modal de Reporte Salidas
+      const modalReporteSalidas = document.getElementById('modalReporteSalidas');
+      const btnReporteSalidas = document.getElementById('btnReporteSalidas');
+      const spanReporteSalidas = modalReporteSalidas.getElementsByClassName('close')[0];
+
+      btnReporteSalidas.onclick = function(e) {
+        e.preventDefault();
+        modalReporteSalidas.style.display = 'block';
+        cargarReporteSalidas();
+      }
+
+      spanReporteSalidas.onclick = function() {
+        modalReporteSalidas.style.display = 'none';
+      }
+
+      // Modal de Reporte Inventario
+      const modalReporteInventario = document.getElementById('modalReporteInventario');
+      const btnReporteInventario = document.getElementById('btnReporteInventario');
+      const spanReporteInventario = modalReporteInventario.getElementsByClassName('close')[0];
+
+      btnReporteInventario.onclick = function(e) {
+        e.preventDefault();
+        modalReporteInventario.style.display = 'block';
+        cargarReporteInventario();
+      }
+
+      spanReporteInventario.onclick = function() {
+        modalReporteInventario.style.display = 'none';
+      }
+
+      // Cerrar modales al hacer clic fuera
+      window.onclick = function(event) {
+        const modals = [
+          modalUsuarios, modalNuevoUsuario, modalProveedores, modalNuevoProveedor,
+          modalProductos, modalNuevoProducto, modalInventario, modalReporteEntradas,
+          modalReporteSalidas, modalReporteInventario
+        ];
+        
+        modals.forEach(modal => {
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        });
+      }
+
+      // Búsqueda en inventario
+      const searchInventario = document.getElementById('searchInventario');
+      searchInventario.addEventListener('input', function() {
+        filtrarInventario(this.value);
+      });
+
+      // Mostrar/ocultar campos según el rol (usuarios)
+      const rolSelect = document.getElementById('rol');
+      const grupoTurno = document.getElementById('grupoTurno');
+      const grupoDepartamento = document.getElementById('grupoDepartamento');
+
+      rolSelect.addEventListener('change', function() {
+        if (this.value === 'operario') {
+          grupoTurno.style.display = 'block';
+          grupoDepartamento.style.display = 'none';
+        } else if (this.value === 'gerente') {
+          grupoTurno.style.display = 'none';
+          grupoDepartamento.style.display = 'block';
+        } else {
+          grupoTurno.style.display = 'none';
+          grupoDepartamento.style.display = 'none';
+        }
+      });
+
+      // Enviar formulario de nuevo usuario
+      const formNuevoUsuario = document.getElementById('formNuevoUsuario');
+      formNuevoUsuario.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('php/admin/nuevo_usuario.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Usuario agregado correctamente');
+            formNuevoUsuario.reset();
+            modalNuevoUsuario.style.display = 'none';
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      // Enviar formulario de nuevo proveedor
+      const formNuevoProveedor = document.getElementById('formNuevoProveedor');
+      formNuevoProveedor.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('php/admin/nuevo_proveedor.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Proveedor agregado correctamente');
+            formNuevoProveedor.reset();
+            modalNuevoProveedor.style.display = 'none';
+            // Recargar la lista de proveedores si está abierta
+            if (modalProveedores.style.display === 'block') {
+              cargarProveedores();
+            }
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      // Enviar formulario de nuevo producto
+      const formNuevoProducto = document.getElementById('formNuevoProducto');
+      formNuevoProducto.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('php/admin/nuevo_producto.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Producto agregado correctamente');
+            formNuevoProducto.reset();
+            modalNuevoProducto.style.display = 'none';
+            // Recargar la lista de productos si está abierta
+            if (modalProductos.style.display === 'block') {
+              cargarProductos();
+            }
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      // Cargar datos del panel
+      fetch("php/panel_admin_data.php")
+      .then(res => res.json())
+      .then(data => {
+        document.querySelectorAll(".stat")[0].querySelector(".num").textContent = data.totales.productos;
+        document.querySelectorAll(".stat")[1].querySelector(".num").textContent = data.totales.pedidos;
+        document.querySelectorAll(".stat")[2].querySelector(".num").textContent = data.totales.entradas;
+        document.querySelectorAll(".stat")[3].querySelector(".num").textContent = data.totales.alertas;
+
+        const tbody = document.querySelector(".recent tbody");
+        tbody.innerHTML = "";
+        data.actividades.forEach(a => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${a.fecha}</td>
+            <td>${a.evento}</td>
+            <td>${a.usuario}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error("Error al cargar datos del panel:", err));
+    });
+
+    // Función para cargar usuarios en el modal
+    function cargarUsuarios() {
+      fetch('php/admin/usuarios.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoUsuarios');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th>Fecha Registro</th></tr></thead><tbody>';
+            data.forEach(usuario => {
+              html += `<tr>
+                <td>${usuario.nombre}</td>
+                <td>${usuario.email}</td>
+                <td>${usuario.rol}</td>
+                <td>${usuario.activo ? 'Sí' : 'No'}</td>
+                <td>${usuario.fecha_creacion}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay usuarios registrados.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar usuarios:', error);
+          contenido.innerHTML = '<p>Error al cargar los usuarios.</p>';
+        });
+    }
+
+    // Función para cargar proveedores en el modal
+    function cargarProveedores() {
+      fetch('php/admin/proveedores.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoProveedores');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Dirección</th></tr></thead><tbody>';
+            data.forEach(proveedor => {
+              html += `<tr>
+                <td>${proveedor.nombre}</td>
+                <td>${proveedor.email || 'N/A'}</td>
+                <td>${proveedor.telefono || 'N/A'}</td>
+                <td>${proveedor.direccion || 'N/A'}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay proveedores registrados.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar proveedores:', error);
+          contenido.innerHTML = '<p>Error al cargar los proveedores.</p>';
+        });
+    }
+
+    // Función para cargar productos en el modal
+    function cargarProductos() {
+      fetch('php/admin/productos.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoProductos');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Nombre</th><th>SKU</th><th>Descripción</th><th>Precio</th><th>Proveedor</th></tr></thead><tbody>';
+            data.forEach(producto => {
+              html += `<tr>
+                <td>${producto.nombre}</td>
+                <td><span class="sku">${producto.sku}</span></td>
+                <td>${producto.descripcion || 'N/A'}</td>
+                <td class="price">$${parseFloat(producto.precio).toFixed(2)}</td>
+                <td>${producto.nombre_proveedor || 'N/A'}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay productos registrados.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar productos:', error);
+          contenido.innerHTML = '<p>Error al cargar los productos.</p>';
+        });
+    }
+
+    // Función para cargar inventario en el modal
+    function cargarInventario() {
+      fetch('php/admin/inventario.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoInventario');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Producto</th><th>SKU</th><th>Descripción</th><th>Stock</th><th>Precio</th><th>Proveedor</th></tr></thead><tbody>';
+            data.forEach(item => {
+              let stockClass = 'stock-high';
+              if (item.cantidadUnidades < 10) {
+                stockClass = 'stock-low';
+              } else if (item.cantidadUnidades < 20) {
+                stockClass = 'stock-medium';
+              }
+
+              html += `<tr>
+                <td>${item.nombre_producto}</td>
+                <td><span class="sku">${item.sku}</span></td>
+                <td>${item.descripcion || 'N/A'}</td>
+                <td class="${stockClass}">${item.cantidadUnidades} unidades</td>
+                <td class="price">$${parseFloat(item.precio).toFixed(2)}</td>
+                <td>${item.nombre_proveedor || 'N/A'}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay productos en el inventario.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar inventario:', error);
+          contenido.innerHTML = '<p>Error al cargar el inventario.</p>';
+        });
+    }
+
+    // Función para cargar reporte de entradas
+    function cargarReporteEntradas() {
+      fetch('php/admin/reporte_entradas.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoReporteEntradas');
+          if (data.length > 0) {
+            let html = '<div class="report-summary">';
+            html += `<p><strong>Total de entradas:</strong> ${data.length}</p>`;
+            html += `<p><strong>Entradas pendientes:</strong> ${data.filter(e => e.estado === 'pendiente').length}</p>`;
+            html += `<p><strong>Entradas autorizadas:</strong> ${data.filter(e => e.estado === 'autorizado').length}</p>`;
+            html += '</div>';
+            
+            html += '<table class="table"><thead><tr><th>Fecha</th><th>N° Factura</th><th>Proveedor</th><th>Estado</th><th>Productos</th><th>Gerente</th></tr></thead><tbody>';
+            data.forEach(entrada => {
+              const estadoClass = entrada.estado === 'autorizado' ? 'status-autorizado' : 'status-pendiente';
+              
+              html += `<tr>
+                <td>${entrada.fechaEntrada}</td>
+                <td>${entrada.numeroFactura}</td>
+                <td>${entrada.nombre_proveedor || 'N/A'}</td>
+                <td><span class="${estadoClass}">${entrada.estado}</span></td>
+                <td>${entrada.total_productos || 0} productos</td>
+                <td>${entrada.nombre_gerente || 'N/A'}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay registros de entradas.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar reporte de entradas:', error);
+          contenido.innerHTML = '<p>Error al cargar el reporte de entradas.</p>';
+        });
+    }
+
+    // Función para cargar reporte de salidas
+    function cargarReporteSalidas() {
+      fetch('php/admin/reporte_salidas.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoReporteSalidas');
+          if (data.length > 0) {
+            let html = '<div class="report-summary">';
+            html += `<p><strong>Total de salidas:</strong> ${data.length}</p>`;
+            html += `<p><strong>Salidas pendientes:</strong> ${data.filter(s => s.estado === 'pendiente').length}</p>`;
+            html += `<p><strong>Salidas autorizadas:</strong> ${data.filter(s => s.estado === 'autorizado').length}</p>`;
+            html += '</div>';
+            
+            html += '<table class="table"><thead><tr><th>Fecha</th><th>N° Pedido</th><th>Cliente</th><th>Estado</th><th>Productos</th><th>Gerente</th></tr></thead><tbody>';
+            data.forEach(salida => {
+              const estadoClass = salida.estado === 'autorizado' ? 'status-autorizado' : 'status-pendiente';
+              
+              html += `<tr>
+                <td>${salida.fechaSalida}</td>
+                <td>${salida.numeroPedido}</td>
+                <td>${salida.nombre_cliente || 'N/A'}</td>
+                <td><span class="${estadoClass}">${salida.estado}</span></td>
+                <td>${salida.total_productos || 0} productos</td>
+                <td>${salida.nombre_gerente || 'N/A'}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay registros de salidas.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar reporte de salidas:', error);
+          contenido.innerHTML = '<p>Error al cargar el reporte de salidas.</p>';
+        });
+    }
+
+    // Función para cargar reporte de inventario
+    function cargarReporteInventario() {
+      fetch('php/admin/reporte_inventario.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoReporteInventario');
+          if (data.length > 0) {
+            let html = '<div class="report-summary">';
+            const totalProductos = data.length;
+            const stockBajo = data.filter(p => p.cantidadActiva < 10).length;
+            const stockMedio = data.filter(p => p.cantidadActiva >= 10 && p.cantidadActiva < 20).length;
+            const stockAlto = data.filter(p => p.cantidadActiva >= 20).length;
+            
+            html += `<p><strong>Total de productos:</strong> ${totalProductos}</p>`;
+            html += `<p><strong>Stock bajo (<10):</strong> <span class="stock-low">${stockBajo} productos</span></p>`;
+            html += `<p><strong>Stock medio (10-19):</strong> <span class="stock-medium">${stockMedio} productos</span></p>`;
+            html += `<p><strong>Stock alto (20+):</strong> <span class="stock-high">${stockAlto} productos</span></p>`;
+            html += '</div>';
+            
+            html += '<table class="table"><thead><tr><th>Producto</th><th>SKU</th><th>Stock</th><th>Precio</th><th>Valor Total</th><th>Proveedor</th></tr></thead><tbody>';
+            data.forEach(producto => {
+              let stockClass = 'stock-high';
+              if (producto.cantidadActiva < 10) {
+                stockClass = 'stock-low';
+              } else if (producto.cantidadActiva < 20) {
+                stockClass = 'stock-medium';
+              }
+              
+              const valorTotal = producto.cantidadActiva * producto.precio;
+
+              html += `<tr>
+                <td>${producto.nombre}</td>
+                <td><span class="sku">${producto.sku}</span></td>
+                <td class="${stockClass}">${producto.cantidadActiva} unidades</td>
+                <td class="price">$${parseFloat(producto.precio).toFixed(2)}</td>
+                <td class="price">$${parseFloat(valorTotal).toFixed(2)}</td>
+                <td>${producto.nombre_proveedor || 'N/A'}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay datos de inventario.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar reporte de inventario:', error);
+          contenido.innerHTML = '<p>Error al cargar el reporte de inventario.</p>';
+        });
+    }
+
+    // Función para filtrar inventario
+    function filtrarInventario(searchTerm) {
+      const table = document.querySelector('#contenidoInventario table');
+      if (!table) return;
+
+      const rows = table.getElementsByTagName('tr');
+      for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let found = false;
+        
+        for (let j = 0; j < cells.length; j++) {
+          const cellText = cells[j].textContent || cells[j].innerText;
+          if (cellText.toLowerCase().includes(searchTerm.toLowerCase())) {
+            found = true;
+            break;
+          }
+        }
+        
+        rows[i].style.display = found ? '' : 'none';
+      }
+    }
+
+    // Función para cargar proveedores en el select de nuevo producto
+    function cargarProveedoresParaSelect() {
+      fetch('php/admin/proveedores.php')
+        .then(response => response.json())
+        .then(data => {
+          const selectProveedor = document.getElementById('proveedor_producto');
+          while (selectProveedor.children.length > 1) {
+            selectProveedor.removeChild(selectProveedor.lastChild);
+          }
+          
+          data.forEach(proveedor => {
+            const option = document.createElement('option');
+            option.value = proveedor.idProveedor;
+            option.textContent = proveedor.nombre;
+            selectProveedor.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar proveedores para select:', error);
+        });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel Operario - Sistema</title>
+  <link rel="stylesheet" href="../HTML/css/panel_admin.css">
+  <style>
+    /* Estilos para modales */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 1000px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: var(--muted);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .table th, .table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef2ff;
+    }
+
+    .table thead th {
+      background: #f1f5f9;
+      color: var(--muted);
+    }
+
+    .status-pendiente {
+      background-color: #fef3c7;
+      color: #d97706;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-autorizado {
+      background-color: #d1fae5;
+      color: #059669;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .container-cards {
+      padding: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(2,6,23,0.06);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat a {
+      text-decoration: none;
+      color: var(--sidebar);
+      font-weight: bold;
+      font-size: 1.1em;
+      display: block;
+      height: 100%;
+    }
+
+    .search-box {
+      margin-bottom: 15px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">STOCKMASTER</div>
+    <nav class="topnav">
+      <a class="logout" href="php/logout.php">Cerrar sesión</a>
+    </nav>
+  </header>
+
+
+
+   <!-- BIENVENIDA-->
+  <section id="sec1">
+  <div class="carrusel">
+    <div class="slide active"></div>
+    <div class="slide"></div>
+  </div>
+
+  <h2>
+    <script language="JavaScript1.2">
+      var message="BIENVENIDO AL PANEL DEL OPERARIO"
+      var neonbasecolor="white"
+      var neontextcolor="#6a040f"
+      var neontextcolor2="#faa307"
+      var flashspeed=190
+      var flashingletters=1
+      var flashingletters2=3
+      var flashpause=0
+
+      var n=0
+      if (document.all||document.getElementById){
+        document.write('<font color="'+neonbasecolor+'">')
+        for (m=0;m<message.length;m++)
+          document.write('<span id="neonlight'+m+'">'+message.charAt(m)+'</span>')
+        document.write('</font>')
+      } else {
+        document.write(message)
+      }
+
+      function crossref(number){
+        var crossobj=document.all? eval("document.all.neonlight"+number) : document.getElementById("neonlight"+number)
+        return crossobj
+      }
+
+      function neon(){
+        if (n==0){
+          for (m=0;m<message.length;m++)
+            crossref(m).style.color=neonbasecolor
+        }   
+        crossref(n).style.color=neontextcolor
+        if (n>flashingletters-1) crossref(n-flashingletters).style.color=neontextcolor2 
+        if (n>(flashingletters+flashingletters2)-1) crossref(n-flashingletters-flashingletters2).style.color=neonbasecolor
+        if (n<message.length-1)
+          n++
+        else{
+          n=0
+          clearInterval(flashing)
+          setTimeout("beginneon()",flashpause)
+          return
+        }
+      }
+
+      function beginneon(){
+        if (document.all||document.getElementById)
+          flashing=setInterval("neon()",flashspeed)
+      }
+      beginneon()
+    </script>
+  </h2>
+
+  <h3>Registra las Entradas y verficalas.</h3>
+  <h5><span1>Desliza</span1> <span4>Hacia</span4> <span1>abajo..</span1></h5>
+</section>
+
+<div style="height:250px; overflow: hidden; z-index: 101; width: 100%; margin-top: -140px;">
+  <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+    <path d="M0.00,49.98 C149.99,150.00 349.20,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+      style="stroke: none; fill: rgb(255, 255, 255);"></path>
+  </svg>
+</div>
+
+<script>
+  // === CARRUSEL SUAVE SIN PARPADEOS ===
+  const imagenes = [
+    'img/f1.jpg',
+    'img/f2.jpg',
+    'img/f3.jpg',
+    'img/f4.jpg'
+  ]; // pon aquí tus rutas
+
+  let index = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  // inicial
+  slides[0].style.backgroundImage = `
+    linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+    url(${imagenes[0]})
+  `;
+  slides[1].style.backgroundImage = `
+    linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+    url(${imagenes[1]})
+  `;
+  slides[1].style.opacity = 0;
+
+  let activo = 0;
+
+  function cambiarFondo() {
+    const actual = slides[activo];
+    const siguiente = slides[1 - activo];
+
+    index = (index + 1) % imagenes.length;
+
+    // Prepara la siguiente imagen ANTES de la transición
+    siguiente.style.backgroundImage = `
+      linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)),
+      url(${imagenes[index]})
+    `;
+
+    // Cruza opacidades simultáneamente
+    siguiente.style.transition = "opacity 1.5s ease-in-out";
+    actual.style.transition = "opacity 1.5s ease-in-out";
+
+    siguiente.style.opacity = 1;
+    actual.style.opacity = 0;
+
+    // alterna las capas
+    activo = 1 - activo;
+  }
+
+  setInterval(cambiarFondo, 4000); // cambia cada 4 segundos
+</script>
+
+<style>
+  /* === Tu CSS original respetado === */
+  #sec1 {
+    width: 100%;
+    height: 110vh;
+    position: relative;
+    color: white;
+    text-align: center;
+    padding: 0 12%;
+    min-height: 100vh;
+    z-index: 99;
+    overflow: hidden;
+  }
+
+  .carrusel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.slide:first-child {
+  opacity: 1;
+}
+
+</style>
+
+
+
+
+
+
+  <div class="container-cards">
+    <h1 style="text-align:center; margin-bottom:20px;">MENÚ DE OPERARIO</h1>
+    <div class="cards">
+      <div class="stat"><a href="javascript:void(0)" id="btnRegistrarEntrada">Registrar Entrada</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnVerEntradas">Ver Entradas</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnRegistrarSalida">Registrar Salida</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnVerSalidas">Ver Salidas</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnVerMercancia">Verificar Mercancía</a></div>
+    </div>
+  </div>
+
+  <!-- Modal para Registrar Entrada -->
+  <div id="modalRegistrarEntrada" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Registrar Nueva Entrada de Mercancía</h2>
+      <form id="formRegistrarEntrada">
+        <div class="form-group">
+          <label for="fechaEntrada">Fecha de Entrada:</label>
+          <input type="date" id="fechaEntrada" name="fechaEntrada" required>
+        </div>
+        <div class="form-group">
+          <label for="numeroFactura">Número de Factura:</label>
+          <input type="text" id="numeroFactura" name="numeroFactura" required>
+        </div>
+        <div class="form-group">
+          <label for="idProveedor">Proveedor:</label>
+          <select id="idProveedor" name="idProveedor" required>
+            <option value="">Selecciona un proveedor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="productos">Productos:</label>
+          <select id="productos" name="idProducto" required>
+            <option value="">Selecciona un producto</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cantidad">Cantidad:</label>
+          <input type="number" id="cantidad" name="cantidad" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="peso">Peso (kg):</label>
+          <input type="number" id="peso" name="peso" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label for="ubicacion">Ubicación en almacén:</label>
+          <input type="text" id="ubicacion" name="ubicacion" placeholder="Ej: A1, B2, etc.">
+        </div>
+        <button type="submit" class="btn">Registrar Entrada</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Entradas -->
+  <div id="modalVerEntradas" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Entradas de Mercancía Registradas</h2>
+      <div class="search-box">
+        <input type="text" id="searchEntradas" placeholder="Buscar entrada...">
+      </div>
+      <div id="contenidoEntradas">
+        <!-- Aquí se cargará la lista de entradas -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Registrar Salida -->
+  <div id="modalRegistrarSalida" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Registrar Nueva Salida de Mercancía</h2>
+      <form id="formRegistrarSalida">
+        <div class="form-group">
+          <label for="fechaSalida">Fecha de Salida:</label>
+          <input type="date" id="fechaSalida" name="fechaSalida" required>
+        </div>
+        <div class="form-group">
+          <label for="numeroPedido">Número de Pedido:</label>
+          <input type="text" id="numeroPedido" name="numeroPedido" required>
+        </div>
+        <div class="form-group">
+          <label for="idCliente">Cliente:</label>
+          <select id="idCliente" name="idCliente" required>
+            <option value="">Selecciona un cliente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="productoSalida">Producto:</label>
+          <select id="productoSalida" name="idProducto" required>
+            <option value="">Selecciona un producto</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cantidadSalida">Cantidad:</label>
+          <input type="number" id="cantidadSalida" name="cantidad" min="1" required>
+        </div>
+        <button type="submit" class="btn">Registrar Salida</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Salidas -->
+  <div id="modalVerSalidas" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Salidas de Mercancía Registradas</h2>
+      <div class="search-box">
+        <input type="text" id="searchSalidas" placeholder="Buscar salida...">
+      </div>
+      <div id="contenidoSalidas">
+        <!-- Aquí se cargará la lista de salidas -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Mercancía -->
+  <div id="modalVerMercancia" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Mercancía en Almacén</h2>
+      <div class="search-box">
+        <input type="text" id="searchMercancia" placeholder="Buscar mercancía...">
+      </div>
+      <div id="contenidoMercancia">
+        <!-- Aquí se cargará la lista de mercancía -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Prevenir el comportamiento por defecto de todos los enlaces en las cards
+      document.querySelectorAll('.cards a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+        });
+      });
+
+      // Modal de Registrar Entrada
+      const modalRegistrarEntrada = document.getElementById('modalRegistrarEntrada');
+      const btnRegistrarEntrada = document.getElementById('btnRegistrarEntrada');
+      const spanRegistrarEntrada = modalRegistrarEntrada.getElementsByClassName('close')[0];
+
+      btnRegistrarEntrada.onclick = function(e) {
+        e.preventDefault();
+        modalRegistrarEntrada.style.display = 'block';
+        cargarProveedores();
+        cargarProductos();
+      }
+
+      spanRegistrarEntrada.onclick = function() {
+        modalRegistrarEntrada.style.display = 'none';
+      }
+
+      // Modal de Ver Entradas
+      const modalVerEntradas = document.getElementById('modalVerEntradas');
+      const btnVerEntradas = document.getElementById('btnVerEntradas');
+      const spanVerEntradas = modalVerEntradas.getElementsByClassName('close')[0];
+
+      btnVerEntradas.onclick = function(e) {
+        e.preventDefault();
+        modalVerEntradas.style.display = 'block';
+        cargarEntradas();
+      }
+
+      spanVerEntradas.onclick = function() {
+        modalVerEntradas.style.display = 'none';
+      }
+
+      // Modal de Registrar Salida
+      const modalRegistrarSalida = document.getElementById('modalRegistrarSalida');
+      const btnRegistrarSalida = document.getElementById('btnRegistrarSalida');
+      const spanRegistrarSalida = modalRegistrarSalida.getElementsByClassName('close')[0];
+
+      btnRegistrarSalida.onclick = function(e) {
+        e.preventDefault();
+        modalRegistrarSalida.style.display = 'block';
+        cargarClientes();
+        cargarProductosSalida();
+      }
+
+      spanRegistrarSalida.onclick = function() {
+        modalRegistrarSalida.style.display = 'none';
+      }
+
+      // Modal de Ver Salidas
+      const modalVerSalidas = document.getElementById('modalVerSalidas');
+      const btnVerSalidas = document.getElementById('btnVerSalidas');
+      const spanVerSalidas = modalVerSalidas.getElementsByClassName('close')[0];
+
+      btnVerSalidas.onclick = function(e) {
+        e.preventDefault();
+        modalVerSalidas.style.display = 'block';
+        cargarSalidas();
+      }
+
+      spanVerSalidas.onclick = function() {
+        modalVerSalidas.style.display = 'none';
+      }
+
+      // Modal de Ver Mercancía
+      const modalVerMercancia = document.getElementById('modalVerMercancia');
+      const btnVerMercancia = document.getElementById('btnVerMercancia');
+      const spanVerMercancia = modalVerMercancia.getElementsByClassName('close')[0];
+
+      btnVerMercancia.onclick = function(e) {
+        e.preventDefault();
+        modalVerMercancia.style.display = 'block';
+        cargarMercancia();
+      }
+
+      spanVerMercancia.onclick = function() {
+        modalVerMercancia.style.display = 'none';
+      }
+
+      // Cerrar modales al hacer clic fuera
+      window.onclick = function(event) {
+        const modals = [
+          modalRegistrarEntrada, modalVerEntradas, modalRegistrarSalida,
+          modalVerSalidas, modalVerMercancia
+        ];
+        
+        modals.forEach(modal => {
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        });
+      }
+
+      // Búsqueda en entradas
+      const searchEntradas = document.getElementById('searchEntradas');
+      searchEntradas.addEventListener('input', function() {
+        filtrarTabla('contenidoEntradas', this.value);
+      });
+
+      // Búsqueda en salidas
+      const searchSalidas = document.getElementById('searchSalidas');
+      searchSalidas.addEventListener('input', function() {
+        filtrarTabla('contenidoSalidas', this.value);
+      });
+
+      // Búsqueda en mercancía
+      const searchMercancia = document.getElementById('searchMercancia');
+      searchMercancia.addEventListener('input', function() {
+        filtrarTabla('contenidoMercancia', this.value);
+      });
+
+      // Enviar formulario de registrar entrada
+      const formRegistrarEntrada = document.getElementById('formRegistrarEntrada');
+      formRegistrarEntrada.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('php/operario/registrar_entrada.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Entrada registrada correctamente');
+            formRegistrarEntrada.reset();
+            modalRegistrarEntrada.style.display = 'none';
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      // Enviar formulario de registrar salida
+      const formRegistrarSalida = document.getElementById('formRegistrarSalida');
+      formRegistrarSalida.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('php/operario/registrar_salida.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Salida registrada correctamente');
+            formRegistrarSalida.reset();
+            modalRegistrarSalida.style.display = 'none';
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
+
+    // Función para cargar proveedores en el select
+    function cargarProveedores() {
+      fetch('php/operario/proveedores.php')
+        .then(response => response.json())
+        .then(data => {
+          const selectProveedor = document.getElementById('idProveedor');
+          while (selectProveedor.children.length > 1) {
+            selectProveedor.removeChild(selectProveedor.lastChild);
+          }
+          
+          data.forEach(proveedor => {
+            const option = document.createElement('option');
+            option.value = proveedor.idProveedor;
+            option.textContent = proveedor.nombre;
+            selectProveedor.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar proveedores:', error);
+        });
+    }
+
+    // Función para cargar productos en el select
+    function cargarProductos() {
+      fetch('php/operario/productos.php')
+        .then(response => response.json())
+        .then(data => {
+          const selectProductos = document.getElementById('productos');
+          while (selectProductos.children.length > 1) {
+            selectProductos.removeChild(selectProductos.lastChild);
+          }
+          
+          data.forEach(producto => {
+            const option = document.createElement('option');
+            option.value = producto.idProducto;
+            option.textContent = producto.nombre;
+            selectProductos.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar productos:', error);
+        });
+    }
+
+    // Función para cargar productos en el select de salida
+    function cargarProductosSalida() {
+      fetch('php/operario/productos.php')
+        .then(response => response.json())
+        .then(data => {
+          const selectProductos = document.getElementById('productoSalida');
+          while (selectProductos.children.length > 1) {
+            selectProductos.removeChild(selectProductos.lastChild);
+          }
+          
+          data.forEach(producto => {
+            const option = document.createElement('option');
+            option.value = producto.idProducto;
+            option.textContent = producto.nombre;
+            selectProductos.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar productos:', error);
+        });
+    }
+
+    // Función para cargar clientes en el select
+    function cargarClientes() {
+      fetch('php/operario/clientes.php')
+        .then(response => response.json())
+        .then(data => {
+          const selectClientes = document.getElementById('idCliente');
+          while (selectClientes.children.length > 1) {
+            selectClientes.removeChild(selectClientes.lastChild);
+          }
+          
+          data.forEach(cliente => {
+            const option = document.createElement('option');
+            option.value = cliente.idCliente;
+            option.textContent = cliente.nombre;
+            selectClientes.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar clientes:', error);
+        });
+    }
+
+    // Función para cargar entradas
+    function cargarEntradas() {
+      fetch('php/operario/entradas.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoEntradas');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Fecha</th><th>N° Factura</th><th>Proveedor</th><th>Estado</th><th>Productos</th></tr></thead><tbody>';
+            data.forEach(entrada => {
+              const estadoClass = entrada.estado === 'autorizado' ? 'status-autorizado' : 'status-pendiente';
+              
+              html += `<tr>
+                <td>${entrada.fechaEntrada}</td>
+                <td>${entrada.numeroFactura}</td>
+                <td>${entrada.nombre_proveedor || 'N/A'}</td>
+                <td><span class="${estadoClass}">${entrada.estado}</span></td>
+                <td>${entrada.total_productos || 0} productos</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay entradas registradas.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar entradas:', error);
+          contenido.innerHTML = '<p>Error al cargar las entradas.</p>';
+        });
+    }
+
+    // Función para cargar salidas
+    function cargarSalidas() {
+      fetch('php/operario/salidas.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoSalidas');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Fecha</th><th>N° Pedido</th><th>Cliente</th><th>Estado</th><th>Productos</th></tr></thead><tbody>';
+            data.forEach(salida => {
+              const estadoClass = salida.estado === 'autorizado' ? 'status-autorizado' : 'status-pendiente';
+              
+              html += `<tr>
+                <td>${salida.fechaSalida}</td>
+                <td>${salida.numeroPedido}</td>
+                <td>${salida.nombre_cliente || 'N/A'}</td>
+                <td><span class="${estadoClass}">${salida.estado}</span></td>
+                <td>${salida.total_productos || 0} productos</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay salidas registradas.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar salidas:', error);
+          contenido.innerHTML = '<p>Error al cargar las salidas.</p>';
+        });
+    }
+
+    // Función para cargar mercancía
+    function cargarMercancia() {
+      fetch('php/operario/mercancia.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoMercancia');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Producto</th><th>SKU</th><th>Cantidad</th><th>Ubicación</th><th>Peso</th><th>Fecha Ingreso</th></tr></thead><tbody>';
+            data.forEach(item => {
+              html += `<tr>
+                <td>${item.nombre_producto}</td>
+                <td>${item.sku}</td>
+                <td>${item.cantidadUnidades} unidades</td>
+                <td>${item.ubicacion || 'N/A'}</td>
+                <td>${item.peso ? item.peso + ' kg' : 'N/A'}</td>
+                <td>${item.fechaIngreso}</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay mercancía registrada.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar mercancía:', error);
+          contenido.innerHTML = '<p>Error al cargar la mercancía.</p>';
+        });
+    }
+
+    // Función para filtrar tablas
+    function filtrarTabla(contenidoId, searchTerm) {
+      const table = document.querySelector(`#${contenidoId} table`);
+      if (!table) return;
+
+      const rows = table.getElementsByTagName('tr');
+      for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let found = false;
+        
+        for (let j = 0; j < cells.length; j++) {
+          const cellText = cells[j].textContent || cells[j].innerText;
+          if (cellText.toLowerCase().includes(searchTerm.toLowerCase())) {
+            found = true;
+            break;
+          }
+        }
+        
+        rows[i].style.display = found ? '' : 'none';
+      }
+    }
+  </script>
+</body>
+</html>

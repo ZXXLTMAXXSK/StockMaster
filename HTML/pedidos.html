@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pedidos - Sistema</title>
+  <link rel="stylesheet" href="../HTML/css/pedidos.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Pedidos</h1>
+    <div class="actions">
+      <a href="nuevo_pedido.html" class="btn">+ Nuevo Pedido</a>
+      <a href="panel_admin.html" class="btn ghost">Volver</a>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="filters">
+      <input placeholder="Buscar por ID o cliente" />
+      <select>
+        <option value="">Todos los estados</option>
+        <option value="pendiente">Pendiente</option>
+        <option value="procesando">Procesando</option>
+        <option value="enviado">Enviado</option>
+        <option value="cancelado">Cancelado</option>
+      </select>
+    </section>
+
+    <section class="orders">
+      <table>
+        <thead><tr><th>ID</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Total</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr><td>#1001</td><td>Juan Pérez</td><td>2025-10-16</td><td>Pendiente</td><td>$34.50</td><td><a href="detalle_pedido.html?id=1001">Ver</a></td></tr>
+          <tr><td>#1000</td><td>María López</td><td>2025-10-15</td><td>Enviado</td><td>$120.00</td><td><a href="detalle_pedido.html?id=1000">Ver</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

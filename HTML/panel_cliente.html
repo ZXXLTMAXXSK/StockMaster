@@ -1,0 +1,1513 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel Cliente - StockMaster</title>
+  <link rel="stylesheet" href="../HTML/css/panel_admin.css">
+  <style>
+    /* Estilos para modales */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 1000px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-success {
+      background: #059669;
+    }
+
+    .btn-warning {
+      background: #d97706;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+    }
+
+    .btn-small {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .table th, .table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef2ff;
+    }
+
+    .table thead th {
+      background: #f1f5f9;
+      color: var(--muted);
+    }
+
+    .status-pendiente {
+      background-color: #fef3c7;
+      color: #d97706;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-enviado {
+      background-color: #dbeafe;
+      color: #1d4ed8;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-entregado {
+      background-color: #d1fae5;
+      color: #059669;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .status-cancelado {
+      background-color: #fee2e2;
+      color: #dc2626;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .container-cards {
+      padding: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(2,6,23,0.06);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat a {
+      text-decoration: none;
+      color: var(--sidebar);
+      font-weight: bold;
+      font-size: 1.1em;
+      display: block;
+      height: 100%;
+    }
+
+    .search-box {
+      margin-bottom: 15px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #059669;
+    }
+
+    .product-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eef2ff;
+    }
+
+    .product-info {
+      flex-grow: 1;
+    }
+
+    .product-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .quantity-btn {
+      background: var(--muted);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+
+    .quantity-input {
+      width: 50px;
+      text-align: center;
+      padding: 5px;
+    }
+
+    .cart-summary {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .detail-row {
+      background: #f8fafc;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    /* ==================== NUEVOS ESTILOS PARA STOCKMASTER ==================== */
+    
+    /* Hero Section Mejorado */
+    .sm-hero-section {
+      width: 100%;
+      min-height: 100vh;
+      background: -webkit-linear-gradient(to right, hsla(339, 80%, 12%, 0.984), hsla(34, 95%, 49%, 0.705)), url(https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600);
+      background: linear-gradient(to right, hsl(339, 80%, 12%, 0.984), hsl(34, 95%, 49%, 0.705)), url(https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600);
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      position: relative;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 30px 60px;
+      overflow: hidden;
+    }
+
+    .sm-hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(245, 158, 11, 0.2) 0%, transparent 60%);
+    }
+
+    .sm-hero-content {
+      max-width: 900px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .sm-hero-title {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      margin-bottom: 25px;
+      font-weight: 800;
+      text-shadow: 3px 3px 10px rgba(0,0,0,0.4);
+      line-height: 1.2;
+    }
+
+    .sm-hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      margin-bottom: 40px;
+      opacity: 0.95;
+      line-height: 1.7;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .sm-hero-cta {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color: #6b0518;
+      padding: 18px 45px;
+      border: none;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sm-hero-cta:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(245, 158, 11, 0.6);
+    }
+
+    /* Features Section */
+    .sm-features-section {
+      background: rgba(255, 255, 255, 0.98);
+      padding: 80px 30px;
+      backdrop-filter: blur(10px);
+    }
+
+    .sm-features-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sm-section-title {
+      text-align: center;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      background: linear-gradient(135deg, #6b0518, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      font-weight: 800;
+    }
+
+    .sm-section-subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      margin-bottom: 60px;
+    }
+
+    .sm-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+      margin-bottom: 40px;
+    }
+
+    .sm-feature-card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      text-align: center;
+      transition: all 0.4s ease;
+      border: 3px solid transparent;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sm-feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .sm-feature-card:hover::before {
+      left: 100%;
+    }
+
+    .sm-feature-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 20px 50px rgba(107, 5, 24, 0.2);
+      border-color: #f59e0b;
+    }
+
+    .sm-feature-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 25px;
+      background: linear-gradient(135deg, #6b0518, #f59e0b);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+      box-shadow: 0 10px 30px rgba(107, 5, 24, 0.3);
+      transition: transform 0.3s;
+    }
+
+    .sm-feature-card:hover .sm-feature-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .sm-feature-card h3 {
+      color: #6b0518;
+      margin-bottom: 18px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .sm-feature-card p {
+      color: #64748b;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    /* Products Preview Section */
+    .sm-products-section {
+      background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(255, 255, 255, 0.95));
+      padding: 80px 30px;
+      backdrop-filter: blur(10px);
+      width: 100%;
+    }
+
+    .sm-products-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sm-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+    }
+
+    .sm-product-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(107, 5, 24, 0.15);
+      transition: all 0.4s ease;
+      border: 3px solid transparent;
+    }
+
+    .sm-product-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(245, 158, 11, 0.35);
+      border-color: #f59e0b;
+    }
+
+    .sm-product-image {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .sm-product-card:hover .sm-product-image {
+      transform: scale(1.1);
+    }
+
+    .sm-product-info {
+      padding: 25px;
+    }
+
+    .sm-product-info h4 {
+      color: #6b0518;
+      margin-bottom: 12px;
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .sm-product-info p {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .sm-product-price {
+      color: #f59e0b;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    /* Testimonials Section */
+    .sm-testimonials-section {
+      background: white;
+      padding: 80px 30px;
+    }
+
+    .sm-testimonials-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sm-testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .sm-testimonial-card {
+      background: linear-gradient(135deg, #fef3c7, #ffffff);
+      padding: 35px;
+      border-radius: 20px;
+      border-left: 5px solid #f59e0b;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+    }
+
+    .sm-testimonial-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(107, 5, 24, 0.15);
+    }
+
+    .sm-testimonial-text {
+      color: #334155;
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    .sm-testimonial-author {
+      color: #6b0518;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .sm-testimonial-role {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* Stats Section */
+    .sm-stats-section {
+      background: linear-gradient(135deg, #6b0518, #f59e0b);
+      padding: 60px 30px;
+      color: white;
+    }
+
+    .sm-stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sm-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+
+    .sm-stat-item {
+      padding: 20px;
+    }
+
+    .sm-stat-number {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .sm-stat-label {
+      font-size: 18px;
+      opacity: 0.95;
+      font-weight: 600;
+    }
+
+    /* Contact Section */
+    .sm-contact-section {
+      background: rgba(255, 255, 255, 0.98);
+      padding: 80px 30px;
+    }
+
+    .sm-contact-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sm-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+    }
+
+    .sm-contact-card {
+      background: linear-gradient(135deg, #fef3c7, #ffffff);
+      padding: 40px 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      border: 3px solid transparent;
+    }
+
+    .sm-contact-card:hover {
+      transform: translateY(-10px);
+      border-color: #f59e0b;
+      box-shadow: 0 15px 40px rgba(107, 5, 24, 0.2);
+    }
+
+    .sm-contact-icon {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+
+    .sm-contact-card h3 {
+      color: #6b0518;
+      font-size: 24px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .sm-contact-card p {
+      color: #334155;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Footer */
+    .sm-footer {
+      background: linear-gradient(135deg, #6b0518, #4a0310);
+      color: white;
+      text-align: center;
+      padding: 50px 30px;
+      box-shadow: 0 -5px 20px rgba(107, 5, 24, 0.3);
+    }
+
+    .sm-footer p {
+      margin: 10px 0;
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .sm-footer p:first-child {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sm-hero-section {
+        background-attachment: scroll;
+        padding: 100px 20px 60px;
+      }
+
+      .sm-features-section,
+      .sm-products-section,
+      .sm-testimonials-section,
+      .sm-contact-section {
+        padding: 60px 20px;
+      }
+
+      .sm-features-grid,
+      .sm-products-grid,
+      .sm-testimonials-grid,
+      .sm-contact-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      .sm-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sm-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">📦 StockMaster</div>
+    <nav class="topnav">
+      <a href="javascript:void(0)" id="btnPerfilCliente">Perfil</a>
+      <a href="javascript:void(0)" id="btnMisPedidos">Mis Pedidos</a>
+      <a class="logout" href="php/logout.php">Cerrar sesión</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="sm-hero-section">
+    <div class="sm-hero-content">
+      <h1>
+    <script language="JavaScript1.2">
+      var message="BIENVENIDO A STOCKMASTER"
+      var neonbasecolor="white"
+      var neontextcolor="#6a040f"
+      var neontextcolor2="#faa307"
+      var flashspeed=190
+      var flashingletters=1
+      var flashingletters2=3
+      var flashpause=0
+
+      var n=0
+      if (document.all||document.getElementById){
+        document.write('<font color="'+neonbasecolor+'">')
+        for (m=0;m<message.length;m++)
+          document.write('<span id="neonlight'+m+'">'+message.charAt(m)+'</span>')
+        document.write('</font>')
+      } else {
+        document.write(message)
+      }
+
+      function crossref(number){
+        var crossobj=document.all? eval("document.all.neonlight"+number) : document.getElementById("neonlight"+number)
+        return crossobj
+      }
+
+      function neon(){
+        if (n==0){
+          for (m=0;m<message.length;m++)
+            crossref(m).style.color=neonbasecolor
+        }   
+        crossref(n).style.color=neontextcolor
+        if (n>flashingletters-1) crossref(n-flashingletters).style.color=neontextcolor2 
+        if (n>(flashingletters+flashingletters2)-1) crossref(n-flashingletters-flashingletters2).style.color=neonbasecolor
+        if (n<message.length-1)
+          n++
+        else{
+          n=0
+          clearInterval(flashing)
+          setTimeout("beginneon()",flashpause)
+          return
+        }
+      }
+
+      function beginneon(){
+        if (document.all||document.getElementById)
+          flashing=setInterval("neon()",flashspeed)
+      }
+      beginneon()
+    </script>
+  </h1>
+      <p class="sm-hero-subtitle">La plataforma líder en gestión de inventarios y pedidos en línea. Gestiona tu almacén de manera inteligente, rápida y segura con tecnología de última generación.</p>
+      <button class="sm-hero-cta" onclick="document.getElementById('btnNuevoPedido').click()">
+        🛒 Realizar Pedido Ahora
+      </button>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="sm-features-section">
+    <div class="sm-features-container">
+      <h2 class="sm-section-title">¿Por qué StockMaster?</h2>
+      <p class="sm-section-subtitle">La solución completa para tu gestión de inventario y pedidos</p>
+      
+      <div class="sm-features-grid">
+        <div class="sm-feature-card">
+          <div class="sm-feature-icon">🚚</div>
+          <h3>Envío Express</h3>
+          <p>Entregas en tiempo récord con seguimiento en tiempo real. Sistema logístico optimizado para garantizar que recibas tus productos en 24-48 horas.</p>
+        </div>
+        
+        <div class="sm-feature-card">
+          <div class="sm-feature-icon">💳</div>
+          <h3>Pagos Seguros</h3>
+          <p>Procesamiento de pagos con encriptación SSL de nivel bancario. Aceptamos todas las formas de pago con la máxima seguridad.</p>
+        </div>
+        
+        <div class="sm-feature-card">
+          <div class="sm-feature-icon">⭐</div>
+          <h3>Calidad Premium</h3>
+          <p>Control de calidad riguroso en cada producto. Todos nuestros artículos pasan por inspección exhaustiva antes del envío.</p>
+        </div>
+        
+        <div class="sm-feature-card">
+          <div class="sm-feature-icon">💬</div>
+          <h3>Soporte 24/7</h3>
+          <p>Equipo de atención al cliente disponible en todo momento. Chat en vivo, email y teléfono para resolver cualquier consulta.</p>
+        </div>
+        
+        <div class="sm-feature-card">
+          <div class="sm-feature-icon">🔄</div>
+          <h3>Devoluciones Fáciles</h3>
+          <p>Política de devolución flexible de 30 días. Si no estás satisfecho, te devolvemos tu dinero sin preguntas.</p>
+        </div>
+        
+        <div class="sm-feature-card">
+          <div class="sm-feature-icon">📊</div>
+          <h3>Gestión Inteligente</h3>
+          <p>Panel de control avanzado con estadísticas en tiempo real. Monitorea tus pedidos, historial y preferencias en un solo lugar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Preview -->
+  <section class="sm-products-section">
+    <div class="sm-products-container">
+      <h2 class="sm-section-title">Productos Destacados</h2>
+      <p class="sm-section-subtitle">Descubre nuestra selección premium de productos más populares</p>
+      
+      <div class="sm-products-grid">
+        <div class="sm-product-card">
+          <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400" alt="Equipamiento Industrial" class="sm-product-image">
+          <div class="sm-product-info">
+            <h4>Equipamiento Industrial</h4>
+            <p>Herramientas y equipos de alta resistencia para uso profesional</p>
+            <span class="sm-product-price">$1,299.99</span>
+          </div>
+        </div>
+        
+        <div class="sm-product-card">
+          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400" alt="Suministros de Oficina" class="sm-product-image">
+          <div class="sm-product-info">
+            <h4>Suministros de Oficina</h4>
+            <p>Material de oficina premium para tu empresa</p>
+            <span class="sm-product-price">$89.99</span>
+          </div>
+        </div>
+        
+        <div class="sm-product-card">
+          <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=400" alt="Tecnología Empresarial" class="sm-product-image">
+          <div class="sm-product-info">
+            <h4>Tecnología Empresarial</h4>
+            <p>Soluciones tecnológicas para optimizar tu negocio</p>
+            <span class="sm-product-price">$2,499.99</span>
+          </div>
+        </div>
+        
+        <div class="sm-product-card">
+          <img src="https://images.unsplash.com/photo-1566888596782-c7f41cc184c5?w=400" alt="Mobiliario Corporativo" class="sm-product-image">
+          <div class="sm-product-info">
+            <h4>Mobiliario Corporativo</h4>
+            <p>Muebles ergonómicos para espacios de trabajo</p>
+            <span class="sm-product-price">$799.99</span>
+          </div>
+        </div>
+
+        <div class="sm-product-card">
+          <img src="https://m.media-amazon.com/images/I/61RYwHoeHjL._AC_UF1000,1000_QL80_.jpg" alt="Mouse Logitech" class="sm-product-image">
+          <div class="sm-product-info">
+            <h4>Mouse Logitech</h4>
+            <p>Herramientas y equipos de alta resistencia para uso profesional</p>
+            <span class="sm-product-price">$299.99</span>
+          </div>
+        </div>
+
+        <div class="sm-product-card">
+          <img src="https://m.media-amazon.com/images/I/71zZPfG0fnL.jpg" alt="Disco Duro SSD 1TB" class="sm-product-image">
+          <div class="sm-product-info">
+            <h4>Disco Duro SSD 1TB</h4>
+            <p>Herramientas de uso para una mejorm PC y en rendimiento</p>
+            <span class="sm-product-price">$329.99</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="sm-testimonials-section">
+    <div class="sm-testimonials-container">
+      <h2 class="sm-section-title">Lo Que Dicen Nuestros Clientes</h2>
+      <p class="sm-section-subtitle">Testimonios reales de empresas que confían en StockMaster</p>
+      
+      <div class="sm-testimonials-grid">
+        <div class="sm-testimonial-card">
+          <p class="sm-testimonial-text">"StockMaster ha revolucionado completamente nuestra gestión de inventario. La plataforma es intuitiva y el servicio al cliente excepcional. Altamente recomendado."</p>
+          <p class="sm-testimonial-author">María González</p>
+          <p class="sm-testimonial-role">Gerente de Operaciones, TechCorp</p>
+        </div>
+        
+        <div class="sm-testimonial-card">
+          <p class="sm-testimonial-text">"El sistema de pedidos es rápido y confiable. Hemos reducido nuestros tiempos de procesamiento en un 60%. Una herramienta indispensable para nuestro negocio."</p>
+          <p class="sm-testimonial-author">Carlos Rodríguez</p>
+          <p class="sm-testimonial-role">Director de Logística, LogiPro</p>
+        </div>
+        
+        <div class="sm-testimonial-card">
+          <p class="sm-testimonial-text">"La calidad de los productos y la velocidad de entrega superan nuestras expectativas. StockMaster es nuestro socio confiable desde hace 3 años."</p>
+          <p class="sm-testimonial-author">Ana Martínez</p>
+          <p class="sm-testimonial-role">CEO, Distribuidora del Norte</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Contact Section -->
+  <section class="sm-contact-section">
+    <div class="sm-contact-container">
+      <h2 class="sm-section-title">Contáctanos</h2>
+      <p class="sm-section-subtitle">Estamos aquí para ayudarte en todo momento</p>
+      
+      <div class="sm-contact-grid">
+        <div class="sm-contact-card">
+          <div class="sm-contact-icon">📞</div>
+          <h3>Teléfono</h3>
+          <p>+52 (55) 1234-5678<br>+52 (55) 8765-4321</p>
+        </div>
+        
+        <div class="sm-contact-card">
+          <div class="sm-contact-icon">📍</div>
+          <h3>Ubicación</h3>
+          <p>Av. Reforma 123, Col. Centro<br>Ciudad de México, CDMX 06000</p>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 50px; color: #334155; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.8;">
+        <p>En StockMaster nos enorgullecemos de ofrecer la mejor experiencia en gestión de inventarios. Nuestro equipo de expertos está disponible para resolver todas tus dudas y ayudarte a optimizar tus procesos de almacenamiento y distribución.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container-cards">
+    <h1 style="text-align:center; margin-bottom:20px;">PANEL DE CONTROL</h1>
+    <div class="cards">
+      <div class="stat"><a href="javascript:void(0)" id="btnPerfil">👤 Perfil del Cliente</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnVerPedidos">📦 Mis Pedidos</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnNuevoPedido">🛒 Nuevo Pedido</a></div>
+      <div class="stat"><a href="javascript:void(0)" id="btnProductosDisponibles">📋 Catálogo Completo</a></div>
+    </div>
+  </div>
+
+
+  <!-- Modal para Perfil del Cliente -->
+  <div id="modalPerfilCliente" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Mi Perfil</h2>
+      <div id="contenidoPerfilCliente">
+        <!-- Aquí se cargará la información del perfil -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Ver Pedidos -->
+  <div id="modalVerPedidos" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Mis Pedidos</h2>
+      <div class="search-box">
+        <input type="text" id="searchPedidos" placeholder="Buscar pedido...">
+      </div>
+      <div id="contenidoPedidos">
+        <!-- Aquí se cargará la lista de pedidos -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Nuevo Pedido -->
+  <div id="modalNuevoPedido" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Nuevo Pedido</h2>
+      <div id="contenidoNuevoPedido">
+        <div class="search-box">
+          <input type="text" id="searchProductosPedido" placeholder="Buscar productos...">
+        </div>
+        <div id="listaProductosPedido">
+          <!-- Aquí se cargarán los productos disponibles -->
+        </div>
+        <div id="carritoPedido" class="cart-summary" style="display: none;">
+          <h3>Mi Pedido</h3>
+          <div id="itemsCarrito">
+            <!-- Aquí se mostrarán los productos del carrito -->
+          </div>
+          <div id="resumenPedido">
+            <!-- Aquí se mostrará el resumen del pedido -->
+          </div>
+          <button class="btn btn-success" onclick="realizarPedido()">Realizar Pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Productos Disponibles -->
+  <div id="modalProductosDisponibles" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Productos Disponibles</h2>
+      <div class="search-box">
+        <input type="text" id="searchProductosDisponibles" placeholder="Buscar productos...">
+      </div>
+      <div id="contenidoProductosDisponibles">
+        <!-- Aquí se cargarán los productos disponibles -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Detalle de Pedido -->
+  <div id="modalDetallePedido" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Detalle del Pedido</h2>
+      <div id="contenidoDetallePedido">
+        <!-- Aquí se cargarán los detalles del pedido -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    let carrito = [];
+    let idCliente = 1; // En un sistema real, esto vendría de la sesión
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Prevenir el comportamiento por defecto de todos los enlaces en las cards
+      document.querySelectorAll('.cards a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+        });
+      });
+
+      // Prevenir comportamiento por defecto en enlaces del topnav
+      document.querySelectorAll('.topnav a').forEach(link => {
+        if (!link.classList.contains('logout')) {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+          });
+        }
+      });
+
+      // Modal de Perfil Cliente
+      const modalPerfilCliente = document.getElementById('modalPerfilCliente');
+      const btnPerfil = document.getElementById('btnPerfil');
+      const btnPerfilCliente = document.getElementById('btnPerfilCliente');
+      const spanPerfilCliente = modalPerfilCliente.getElementsByClassName('close')[0];
+
+      btnPerfil.onclick = function(e) {
+        e.preventDefault();
+        modalPerfilCliente.style.display = 'block';
+        cargarPerfilCliente();
+      }
+
+      btnPerfilCliente.onclick = function(e) {
+        e.preventDefault();
+        modalPerfilCliente.style.display = 'block';
+        cargarPerfilCliente();
+      }
+
+      spanPerfilCliente.onclick = function() {
+        modalPerfilCliente.style.display = 'none';
+      }
+
+      // Modal de Ver Pedidos
+      const modalVerPedidos = document.getElementById('modalVerPedidos');
+      const btnVerPedidos = document.getElementById('btnVerPedidos');
+      const btnMisPedidos = document.getElementById('btnMisPedidos');
+      const spanVerPedidos = modalVerPedidos.getElementsByClassName('close')[0];
+
+      btnVerPedidos.onclick = function(e) {
+        e.preventDefault();
+        modalVerPedidos.style.display = 'block';
+        cargarPedidosCliente();
+      }
+
+      btnMisPedidos.onclick = function(e) {
+        e.preventDefault();
+        modalVerPedidos.style.display = 'block';
+        cargarPedidosCliente();
+      }
+
+      spanVerPedidos.onclick = function() {
+        modalVerPedidos.style.display = 'none';
+      }
+
+      // Modal de Nuevo Pedido
+      const modalNuevoPedido = document.getElementById('modalNuevoPedido');
+      const btnNuevoPedido = document.getElementById('btnNuevoPedido');
+      const spanNuevoPedido = modalNuevoPedido.getElementsByClassName('close')[0];
+
+      btnNuevoPedido.onclick = function(e) {
+        e.preventDefault();
+        modalNuevoPedido.style.display = 'block';
+        cargarProductosParaPedido();
+        carrito = []; // Reiniciar carrito
+        actualizarCarrito();
+      }
+
+      spanNuevoPedido.onclick = function() {
+        modalNuevoPedido.style.display = 'none';
+      }
+
+      // Modal de Productos Disponibles
+      const modalProductosDisponibles = document.getElementById('modalProductosDisponibles');
+      const btnProductosDisponibles = document.getElementById('btnProductosDisponibles');
+      const spanProductosDisponibles = modalProductosDisponibles.getElementsByClassName('close')[0];
+
+      btnProductosDisponibles.onclick = function(e) {
+        e.preventDefault();
+        modalProductosDisponibles.style.display = 'block';
+        cargarProductosDisponibles();
+      }
+
+      spanProductosDisponibles.onclick = function() {
+        modalProductosDisponibles.style.display = 'none';
+      }
+
+      // Modal de Detalle de Pedido
+      const modalDetallePedido = document.getElementById('modalDetallePedido');
+      const spanDetallePedido = modalDetallePedido.getElementsByClassName('close')[0];
+      spanDetallePedido.onclick = function() {
+        modalDetallePedido.style.display = 'none';
+      }
+
+      // Cerrar modales al hacer clic fuera
+      window.onclick = function(event) {
+        const modals = [
+          modalPerfilCliente, modalVerPedidos, modalNuevoPedido,
+          modalProductosDisponibles, modalDetallePedido
+        ];
+        
+        modals.forEach(modal => {
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        });
+      }
+
+      // Búsqueda en pedidos
+      const searchPedidos = document.getElementById('searchPedidos');
+      searchPedidos.addEventListener('input', function() {
+        filtrarTabla('contenidoPedidos', this.value);
+      });
+
+      // Búsqueda en productos para pedido
+      const searchProductosPedido = document.getElementById('searchProductosPedido');
+      searchProductosPedido.addEventListener('input', function() {
+        filtrarTabla('listaProductosPedido', this.value);
+      });
+
+      // Búsqueda en productos disponibles
+      const searchProductosDisponibles = document.getElementById('searchProductosDisponibles');
+      searchProductosDisponibles.addEventListener('input', function() {
+        filtrarTabla('contenidoProductosDisponibles', this.value);
+      });
+    });
+
+    // Función para cargar perfil del cliente
+    function cargarPerfilCliente() {
+      fetch(`php/cliente/perfil.php?id=${idCliente}`)
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoPerfilCliente');
+          if (data) {
+            let html = `
+              <div class="form-group">
+                <label>Nombre:</label>
+                <p>${data.nombre}</p>
+              </div>
+              <div class="form-group">
+                <label>Email:</label>
+                <p>${data.email}</p>
+              </div>
+              <div class="form-group">
+                <label>Teléfono:</label>
+                <p>${data.telefono || 'No especificado'}</p>
+              </div>
+              <div class="form-group">
+                <label>Dirección:</label>
+                <p>${data.direccion || 'No especificada'}</p>
+              </div>
+              <div class="form-group">
+                <label>Ciudad:</label>
+                <p>${data.ciudad || 'No especificada'}</p>
+              </div>
+              <div class="form-group">
+                <label>Fecha de Registro:</label>
+                <p>${data.fecha_registro}</p>
+              </div>
+            `;
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>Error al cargar el perfil.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar perfil:', error);
+          document.getElementById('contenidoPerfilCliente').innerHTML = '<p>Error al cargar el perfil.</p>';
+        });
+    }
+
+    // Función para cargar pedidos del cliente
+    function cargarPedidosCliente() {
+      fetch(`php/cliente/pedidos.php?id=${idCliente}`)
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoPedidos');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>N° Pedido</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
+            data.forEach(pedido => {
+              let estadoClass = '';
+              switch(pedido.estado) {
+                case 'pendiente': estadoClass = 'status-pendiente'; break;
+                case 'enviado': estadoClass = 'status-enviado'; break;
+                case 'entregado': estadoClass = 'status-entregado'; break;
+                case 'cancelado': estadoClass = 'status-cancelado'; break;
+              }
+              
+              html += `<tr>
+                <td>#${pedido.idPedido}</td>
+                <td>${pedido.fechaPedido}</td>
+                <td class="price">$${parseFloat(pedido.totalMonto).toFixed(2)}</td>
+                <td><span class="${estadoClass}">${pedido.estado}</span></td>
+                <td class="action-buttons">
+                  <button class="btn btn-warning btn-small" onclick="verDetallePedido(${pedido.idPedido})">Detalles</button>
+                  ${pedido.estado === 'pendiente' ? `<button class="btn btn-danger btn-small" onclick="cancelarPedido(${pedido.idPedido})">Cancelar</button>` : ''}
+                </td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No tienes pedidos realizados.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar pedidos:', error);
+          contenido.innerHTML = '<p>Error al cargar los pedidos.</p>';
+        });
+    }
+
+    // Función para cargar productos para nuevo pedido
+    function cargarProductosParaPedido() {
+      fetch('php/cliente/productos_disponibles.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('listaProductosPedido');
+          if (data.length > 0) {
+            let html = '';
+            data.forEach(producto => {
+              html += `
+                <div class="product-item">
+                  <div class="product-info">
+                    <h4>${producto.nombre}</h4>
+                    <p>${producto.descripcion || 'Sin descripción'}</p>
+                    <p class="price">$${parseFloat(producto.precio).toFixed(2)}</p>
+                    <p><small>SKU: ${producto.sku} | Stock: ${producto.stock_disponible} unidades</small></p>
+                  </div>
+                  <div class="product-controls">
+                    <div class="quantity-controls">
+                      <button class="quantity-btn" onclick="decrementarCantidad(${producto.idProducto})">-</button>
+                      <input type="number" id="cantidad-${producto.idProducto}" class="quantity-input" value="0" min="0" max="${producto.stock_disponible}" readonly>
+                      <button class="quantity-btn" onclick="incrementarCantidad(${producto.idProducto}, ${producto.stock_disponible})">+</button>
+                    </div>
+                    <button class="btn btn-small" onclick="agregarAlCarrito(${producto.idProducto}, '${producto.nombre}', ${producto.precio})">Agregar</button>
+                  </div>
+                </div>
+              `;
+            });
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay productos disponibles.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar productos:', error);
+          contenido.innerHTML = '<p>Error al cargar los productos.</p>';
+        });
+    }
+
+    // Función para cargar productos disponibles
+    function cargarProductosDisponibles() {
+      fetch('php/cliente/productos_disponibles.php')
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoProductosDisponibles');
+          if (data.length > 0) {
+            let html = '<table class="table"><thead><tr><th>Producto</th><th>Descripción</th><th>Precio</th><th>SKU</th><th>Stock Disponible</th></tr></thead><tbody>';
+            data.forEach(producto => {
+              html += `<tr>
+                <td>${producto.nombre}</td>
+                <td>${producto.descripcion || 'N/A'}</td>
+                <td class="price">$${parseFloat(producto.precio).toFixed(2)}</td>
+                <td>${producto.sku}</td>
+                <td>${producto.stock_disponible} unidades</td>
+              </tr>`;
+            });
+            html += '</tbody></table>';
+            contenido.innerHTML = html;
+          } else {
+            contenido.innerHTML = '<p>No hay productos disponibles.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error al cargar productos:', error);
+          contenido.innerHTML = '<p>Error al cargar los productos.</p>';
+        });
+    }
+
+    // Funciones para el carrito de compras
+    function incrementarCantidad(idProducto, stockMaximo) {
+      const input = document.getElementById(`cantidad-${idProducto}`);
+      let cantidad = parseInt(input.value);
+      if (cantidad < stockMaximo) {
+        input.value = cantidad + 1;
+      }
+    }
+
+    function decrementarCantidad(idProducto) {
+      const input = document.getElementById(`cantidad-${idProducto}`);
+      let cantidad = parseInt(input.value);
+      if (cantidad > 0) {
+        input.value = cantidad - 1;
+      }
+    }
+
+    function agregarAlCarrito(idProducto, nombre, precio) {
+      const cantidad = parseInt(document.getElementById(`cantidad-${idProducto}`).value);
+      
+      if (cantidad > 0) {
+        const productoExistente = carrito.find(item => item.idProducto === idProducto);
+        
+        if (productoExistente) {
+          productoExistente.cantidad += cantidad;
+        } else {
+          carrito.push({
+            idProducto: idProducto,
+            nombre: nombre,
+            precio: precio,
+            cantidad: cantidad
+          });
+        }
+        
+        document.getElementById(`cantidad-${idProducto}`).value = 0;
+        actualizarCarrito();
+      } else {
+        alert('Selecciona una cantidad mayor a 0');
+      }
+    }
+
+    function actualizarCarrito() {
+      const itemsCarrito = document.getElementById('itemsCarrito');
+      const resumenPedido = document.getElementById('resumenPedido');
+      const carritoDiv = document.getElementById('carritoPedido');
+      
+      if (carrito.length > 0) {
+        carritoDiv.style.display = 'block';
+        
+        let htmlItems = '';
+        let total = 0;
+        
+        carrito.forEach((item, index) => {
+          const subtotal = item.precio * item.cantidad;
+          total += subtotal;
+          
+          htmlItems += `
+            <div class="product-item">
+              <div class="product-info">
+                <h4>${item.nombre}</h4>
+                <p>Cantidad: ${item.cantidad} x $${parseFloat(item.precio).toFixed(2)}</p>
+              </div>
+              <div class="product-controls">
+                <span class="price">$${parseFloat(subtotal).toFixed(2)}</span>
+                <button class="btn btn-danger btn-small" onclick="eliminarDelCarrito(${index})">Eliminar</button>
+              </div>
+            </div>
+          `;
+        });
+        
+        itemsCarrito.innerHTML = htmlItems;
+        resumenPedido.innerHTML = `<h4>Total: $${parseFloat(total).toFixed(2)}</h4>`;
+      } else {
+        carritoDiv.style.display = 'none';
+      }
+    }
+
+    function eliminarDelCarrito(index) {
+      carrito.splice(index, 1);
+      actualizarCarrito();
+    }
+
+    function realizarPedido() {
+      if (carrito.length === 0) {
+        alert('El carrito está vacío');
+        return;
+      }
+
+      const pedidoData = {
+        idCliente: idCliente,
+        items: carrito
+      };
+
+      fetch('php/cliente/nuevo_pedido.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pedidoData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Pedido realizado correctamente');
+          carrito = [];
+          actualizarCarrito();
+          document.getElementById('modalNuevoPedido').style.display = 'none';
+          cargarPedidosCliente(); // Actualizar lista de pedidos
+        } else {
+          alert('Error: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al realizar el pedido');
+      });
+    }
+
+    // Función para ver detalle de pedido
+    function verDetallePedido(idPedido) {
+      fetch(`php/cliente/detalle_pedido.php?id=${idPedido}`)
+        .then(response => response.json())
+        .then(data => {
+          const contenido = document.getElementById('contenidoDetallePedido');
+          let html = `<h3>Pedido #${data.pedido.idPedido}</h3>`;
+          html += `<p><strong>Fecha:</strong> ${data.pedido.fechaPedido}</p>`;
+          html += `<p><strong>Estado:</strong> <span class="status-${data.pedido.estado}">${data.pedido.estado}</span></p>`;
+          html += `<p><strong>Total:</strong> $${parseFloat(data.pedido.totalMonto).toFixed(2)}</p>`;
+          
+          html += '<h4>Productos:</h4>';
+          data.items.forEach(item => {
+            const subtotal = item.cantidadSolicitada * item.precio;
+            html += `<div class="detail-row">
+              <p><strong>Producto:</strong> ${item.nombre_producto}</p>
+              <p><strong>Cantidad:</strong> ${item.cantidadSolicitada} unidades</p>
+              <p><strong>Precio unitario:</strong> $${parseFloat(item.precio).toFixed(2)}</p>
+              <p><strong>Entregado:</strong> ${item.cantidadEntregada} unidades</p>
+              <p><strong>Subtotal:</strong> $${parseFloat(subtotal).toFixed(2)}</p>
+            </div>`;
+          });
+          
+          contenido.innerHTML = html;
+          document.getElementById('modalDetallePedido').style.display = 'block';
+        })
+        .catch(error => {
+          console.error('Error al cargar detalle de pedido:', error);
+          alert('Error al cargar los detalles del pedido');
+        });
+    }
+
+    // Función para cancelar pedido
+    function cancelarPedido(idPedido) {
+      if (confirm('¿Está seguro de cancelar este pedido?')) {
+        fetch('php/cliente/cancelar_pedido.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ idPedido: idPedido })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Pedido cancelado correctamente');
+            cargarPedidosCliente();
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al cancelar el pedido');
+        });
+      }
+    }   
+
+    // Función para filtrar tablas
+    function filtrarTabla(contenidoId, searchTerm) {
+      const container = document.getElementById(contenidoId);
+      const items = container.getElementsByClassName('product-item') || container.getElementsByTagName('tr');
+      
+      for (let i = 0; i < items.length; i++) {
+        const text = items[i].textContent || items[i].innerText;
+        if (text.toLowerCase().includes(searchTerm.toLowerCase())) {
+          items[i].style.display = '';
+        } else {
+          items[i].style.display = 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
